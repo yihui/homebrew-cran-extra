@@ -16,8 +16,9 @@ system('git checkout gh-pages')
 db = available.packages(type = 'source')
 if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
   info = read.dcf(pkg_file, c('Package', 'Version'))
-  pkgs = intersect(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) > info[, 2], 1])
+  pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
 }
+pkgs = intersect(pkgs, db[, 'Package'])
 
 if (length(pkgs) == 0) q('no')
 
