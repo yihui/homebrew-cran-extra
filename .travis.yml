@@ -1,8 +1,16 @@
-language: R
+language: c
 os: osx
 osx_image: xcode9.3
 
-cache: packages
+cache:
+  directories:
+    - $HOME/R
 
 before_install:
-  - brew install libxml2
+  - mkdir -p ~/R
+
+install:
+  - brew install libxml2 r
+
+script:
+  - Rscript build.R
