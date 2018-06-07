@@ -14,4 +14,4 @@ Rscript build.R
 git checkout gh-pages
 git add -A
 git commit --amend -m"Publishing from Travis build $TRAVIS_BUILD_NUMBER"
-git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git origin gh-pages > /dev/null
+git push -fq https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages > /dev/null
