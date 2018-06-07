@@ -1,5 +1,6 @@
 commonmark
 digest
+httpuv
 markdown
 Rcpp
 roxygen2
