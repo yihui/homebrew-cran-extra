@@ -1,2 +1,6 @@
+digest
 markdown
+Rcpp
+roxygen2
+stringi
 xml2
