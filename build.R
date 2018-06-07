@@ -6,7 +6,10 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
   source('https://install-github.me/yihui/xfun')
 }
 
-source('https://install-github.me/lawremi/RGtk2')
+if (!xfun::loadable('devtools')) {
+  install.packages('devtools')
+  devtools::install_github('lawremi/RGtk2/RGtk2')
+}
 
 # make sure these packages' dependencies are installed
 for (pkg in pkgs <- readLines('packages')) {
