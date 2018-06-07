@@ -1,7 +1,12 @@
 commonmark
+curl
 digest
+git2r
 httpuv
+jsonlite
 markdown
+openssl
+RGtk2
 Rcpp
 roxygen2
 stringi
