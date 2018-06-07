@@ -15,5 +15,6 @@ Rcpp
 readr
 roxygen2
 rstan
+spatstat
 stringi
 xml2
