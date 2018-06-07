@@ -1,3 +1,5 @@
+options(repos = c(CRAN = 'https://cran.rstudio.com'))
+
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
 # install brew dependencies
