@@ -2,6 +2,7 @@ commonmark
 digest
 httpuv
 markdown
+RGtk2
 Rcpp
 roxygen2
 stringi

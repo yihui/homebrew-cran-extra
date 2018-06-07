@@ -15,7 +15,7 @@ before_install:
 install:
   - brew install gcc || true
   - brew link --overwrite gcc
-  - brew install r
+  - brew install r gtk+
 
 script:
   - ./build.sh
