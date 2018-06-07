@@ -31,7 +31,8 @@ for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
   )
 }
 
-dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(c(dir, 'src/contrib'), recursive = TRUE, showWarnings = FALSE)
+file.create('src/contrib/PACKAGES')
 
 file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
