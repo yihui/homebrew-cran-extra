@@ -53,3 +53,6 @@ file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
+
+system2('ls', c('-lh', dir))
+system('du -sh .')
