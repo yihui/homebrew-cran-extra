@@ -1,0 +1,8 @@
+language: R
+os: osx
+osx_image: xcode9.3
+
+cache: packages
+
+before_install:
+  - brew install libxml2
