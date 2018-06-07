@@ -1,4 +1,3 @@
-broom
 commonmark
 curl
 digest
@@ -10,7 +9,10 @@ lme4
 markdown
 openssl
 RGtk2
+RProtoBuf
+RSQLite
 Rcpp
+readr
 roxygen2
 rstan
 stringi
