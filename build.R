@@ -8,6 +8,7 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
 
 if (!xfun::loadable('devtools', new_session = TRUE)) install.packages('devtools')
 if (!xfun::loadable('RGtk2', new_session = TRUE)) {
+  system('brew install gtk+')
   devtools::install_github('lawremi/RGtk2/RGtk2')
 }
 
@@ -28,6 +29,7 @@ pkgs = intersect(pkgs, db[, 'Package'])
 if (length(pkgs) == 0) q('no')
 
 if ('RGtk2' %in% pkgs && db['RGtk2', 'Version'] == '2.20.34') {
+  system('brew install gtk+')
   system('git clone --depth=1 https://github.com/lawremi/RGtk2.git')
   system('R CMD build RGtk2/RGtk2')
   unlink('RGtk2', recursive = TRUE)
