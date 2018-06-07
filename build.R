@@ -2,7 +2,7 @@ ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
 
 # install xfun (from Github)
-if (!requireNamespace('xfun') || packageVersion('xfun') < '0.1.10') {
+if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.10') {
   source('https://install-github.me/yihui/xfun')
 }
 
