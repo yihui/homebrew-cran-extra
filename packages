@@ -1,6 +1,7 @@
 commonmark
 curl
 digest
+dplyr
 git2r
 httpuv
 jsonlite
