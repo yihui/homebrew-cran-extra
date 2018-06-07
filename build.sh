@@ -2,6 +2,9 @@
 
 set -e
 
+git config --global user.email xie@yihui.name
+git config --global user.name "Yihui Xie"
+
 git fetch origin gh-pages:gh-pages
 
 Rscript build.R
