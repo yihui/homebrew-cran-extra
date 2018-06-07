@@ -24,7 +24,7 @@ if (length(pkgs) == 0) q('no')
 for (pkg in pkgs) xfun:::download_tarball(pkg, db)
 
 # build binary packages
-for (pkg in list.files('.', '.+[.]tar[.].gz$')) {
+for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
   if (xfun::Rcmd(c('INSTALL', '--build', pkg)) != 0) stop(
     'Failed to build the package ', pkg
   )
