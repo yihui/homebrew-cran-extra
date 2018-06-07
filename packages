@@ -1,3 +1,4 @@
+broom
 commonmark
 curl
 digest
@@ -5,10 +6,12 @@ dplyr
 git2r
 httpuv
 jsonlite
+lme4
 markdown
 openssl
 RGtk2
 Rcpp
 roxygen2
+rstan
 stringi
 xml2
