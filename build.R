@@ -18,6 +18,11 @@ for (pkg in pkgs <- readLines('packages')) {
 }
 
 system('git checkout gh-pages')
+
+# delete binaries that were removed from the ./packages file
+tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
+file.remove(tgz[!(gsub('_.*', '', basename(tgz)) %in% pkgs)])
+
 # download source packages that have been updated on CRAN
 db = available.packages(type = 'source')
 if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
