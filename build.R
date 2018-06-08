@@ -26,7 +26,8 @@ if (!xfun::loadable('RGtk2', new_session = TRUE)) {
 # make sure these packages' dependencies are installed
 for (pkg in pkgs <- readLines('packages')) {
   if (!xfun::loadable(pkg, new_session = TRUE)) {
-    install_dep(pkg); install.packages(pkg)
+    install_dep(pkg)
+    if (!xfun::loadable(pkg, new_session = TRUE)) install.packages(pkg)
   }
 }
 
