@@ -32,6 +32,12 @@ for (pkg in pkgs <- readLines('packages')) {
 
 system('git checkout gh-pages')
 
+unlink(c('CNAME', 'src'), recursive = TRUE)
+writeLines(c(
+  '/src/*  https://cran.rstudio.com/src/:splat',
+  '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
+), '_redirects')
+
 # delete binaries that were removed from the ./packages file
 tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
 file.remove(tgz[!(gsub('_.*', '', basename(tgz)) %in% pkgs)])
@@ -71,12 +77,6 @@ file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
-
-unlink(c('CNAME', 'src'), recursive = TRUE)
-writeLines(c(
-  '/src/*  https://cran.rstudio.com/src/:splat',
-  '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
-), '_redirects')
 
 system2('ls', c('-lh', dir))
 system('du -sh .')
