@@ -66,13 +66,17 @@ for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
 }
 
 dir.create(dir, recursive = TRUE, showWarnings = FALSE)
-dir.create('src/contrib', recursive = TRUE, showWarnings = FALSE)
-file.create('src/contrib/PACKAGES')
 
 file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
+
+unlink(c('CNAME', 'src'), recursive = TRUE)
+writeLines(c(
+  '/src/*  https://cran.rstudio.com/src/:splat',
+  '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
+), '_redirects')
 
 system2('ls', c('-lh', dir))
 system('du -sh .')
