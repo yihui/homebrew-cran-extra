@@ -7,7 +7,7 @@ Some binary R packages for the Homebrew version of base R on macOS. If you are u
 ```r
 options(
   pkgType = 'mac.binary.el-capitan',
-  repos = c('https://macos.rbind.org', getOption('repos'))
+  repos = 'https://macos.rbind.org'
 )
 ```
 
