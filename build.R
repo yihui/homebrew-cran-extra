@@ -6,7 +6,8 @@ dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
 install_dep = function(pkg) {
   dep = c(
     RGtk2 = 'gtk+',
-    RProtoBuf = 'protobuf'
+    RProtoBuf = 'protobuf',
+    cairoDevice = 'cairo'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep))
 }
@@ -21,6 +22,11 @@ if (!xfun::loadable('devtools', new_session = TRUE)) install.packages('devtools'
 if (!xfun::loadable('RGtk2', new_session = TRUE)) {
   install_dep('RGtk2')
   devtools::install_github('lawremi/RGtk2/RGtk2')
+}
+# TODO: remove this when cairoDevice > 2.24 is on CRAN
+if (!xfun::loadable('cairoDevice', new_session = TRUE)) {
+  install_dep('cairoDevice')
+  devtools::install_github('lawremi/cairoDevice')
 }
 
 # make sure these packages' dependencies are installed
@@ -60,6 +66,14 @@ if ('RGtk2' %in% pkgs && db['RGtk2', 'Version'] == '2.20.34') {
   system('R CMD build RGtk2/RGtk2')
   unlink('RGtk2', recursive = TRUE)
   pkgs = setdiff(pkgs, 'RGtk2')
+}
+# TODO: remove this when cairoDevice > 2.24 is on CRAN
+if ('cairoDevice' %in% pkgs && db['cairoDevice', 'Version'] == '2.24') {
+  system('brew install cairo')
+  system('git clone --depth=1 https://github.com/lawremi/cairoDevice.git')
+  system('R CMD build cairoDevice')
+  unlink('cairoDevice', recursive = TRUE)
+  pkgs = setdiff(pkgs, 'cairoDevice')
 }
 
 for (pkg in pkgs) xfun:::download_tarball(pkg, db)
