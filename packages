@@ -3,9 +3,11 @@ commonmark
 curl
 digest
 dplyr
+fs
 git2r
 httpuv
 jsonlite
+later
 lme4
 markdown
 openssl
