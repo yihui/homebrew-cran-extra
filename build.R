@@ -27,20 +27,22 @@ for (pkg in c('knitr', xfun:::pkg_dep(pkgs <- readLines('packages'), db))) {
   }
 }
 
-readme = xfun::read_utf8('README.md')  # to generate the homepage later
+# render the homepage index.html
+home = local({
+  x = xfun::read_utf8('README.md')
+  x[1] = paste0(x[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
+  xfun::write_utf8(x, 'index.Rmd'); on.exit(unlink('index.*'), add = TRUE)
+  knitr::rocco('index.Rmd', encoding = 'UTF-8')
+  xfun::read_utf8('index.html')
+})
 system('git checkout gh-pages')
 
 unlink(c('CNAME', 'src'), recursive = TRUE)
+xfun::write_utf8(home, 'index.html')
 writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
-# render the homepage index.html
-local({
-  readme[1] = paste0(readme[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
-  xfun::write_utf8(readme, 'index.Rmd'); on.exit(unlink(c('index.Rmd', 'index.md')), add = TRUE)
-  knitr::rocco('index.Rmd', encoding = 'UTF-8')
-})
 
 # delete binaries that were removed from the ./packages file, or of multiple
 # versions of the same package
