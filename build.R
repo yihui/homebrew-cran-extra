@@ -20,7 +20,7 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
 db = available.packages(type = 'source')
 
 # make sure these packages' dependencies are installed
-for (pkg in pkgs <- readLines('packages')) {
+for (pkg in xfun:::pkg_dep(pkgs <- readLines('packages'), db)) {
   if (!xfun::loadable(pkg, new_session = TRUE)) {
     install_dep(pkg)
     if (!xfun::loadable(pkg, new_session = TRUE)) install.packages(pkg)
