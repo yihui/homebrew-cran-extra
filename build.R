@@ -38,7 +38,7 @@ writeLines(c(
 # render the homepage index.html
 local({
   readme[1] = paste0(readme[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
-  xfun::write_utf8(readme, 'index.Rmd'); on.exit(unlink('index.Rmd'), add = TRUE)
+  xfun::write_utf8(readme, 'index.Rmd'); on.exit(unlink(c('index.Rmd', 'index.md')), add = TRUE)
   knitr::rocco('index.Rmd', encoding = 'UTF-8')
 })
 
