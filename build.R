@@ -36,8 +36,11 @@ writeLines(c(
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
 # render the homepage index.html
-readme[1] = paste0(readme[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
-knitr::rocco(text = readme, output = 'index.html')
+local({
+  readme[1] = paste0(readme[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
+  xfun::write_utf8(readme, 'index.Rmd'); on.exit(unlink('index.Rmd'), add = TRUE)
+  knitr::rocco('index.Rmd', encoding = 'UTF-8')
+})
 
 # delete binaries that were removed from the ./packages file, or of multiple
 # versions of the same package
