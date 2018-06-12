@@ -35,9 +35,11 @@ writeLines(c(
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
 
-# delete binaries that were removed from the ./packages file
+# delete binaries that were removed from the ./packages file, or of multiple
+# versions of the same package
 tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
-file.remove(tgz[!(gsub('_.*', '', basename(tgz)) %in% pkgs)])
+tgz_name = gsub('_.*', '', basename(tgz))
+file.remove(tgz[!(tgz_name %in% pkgs) | duplicated(tgz_name, fromLast = TRUE)])
 
 # download source packages that have been updated on CRAN
 if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
@@ -52,7 +54,9 @@ for (pkg in pkgs) xfun:::download_tarball(pkg, db)
 
 # build binary packages
 for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
-  install_dep(gsub('_.*$', '', pkg))
+  install_dep(p <- gsub('_.*$', '', pkg))
+  # remove existing binary packages
+  file.remove(list.files(dir, paste0('^', p, '_.+[.]tgz$'), full.names = TRUE))
   if (xfun::Rcmd(c('INSTALL', '--build', pkg)) != 0) stop(
     'Failed to build the package ', pkg
   )
