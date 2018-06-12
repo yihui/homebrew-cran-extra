@@ -19,14 +19,15 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
 
 db = available.packages(type = 'source')
 
-# make sure these packages' dependencies are installed
-for (pkg in xfun:::pkg_dep(pkgs <- readLines('packages'), db)) {
+# make sure these packages' dependencies are installed (knitr is only for the homepage)
+for (pkg in c('knitr', xfun:::pkg_dep(pkgs <- readLines('packages'), db))) {
   if (!xfun::loadable(pkg, new_session = TRUE)) {
     install_dep(pkg)
     if (!xfun::loadable(pkg, new_session = TRUE)) install.packages(pkg)
   }
 }
 
+readme = xfun::read_utf8('README.md')  # to generate the homepage later
 system('git checkout gh-pages')
 
 unlink(c('CNAME', 'src'), recursive = TRUE)
@@ -34,6 +35,9 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
+# render the homepage index.html
+readme[1] = paste0(readme[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
+knitr::rocco(text = readme, output = 'index.html')
 
 # delete binaries that were removed from the ./packages file, or of multiple
 # versions of the same package
