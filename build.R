@@ -17,17 +17,7 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
   source('https://install-github.me/yihui/xfun')
 }
 
-# TODO: remove this when RGtk2 > 2.20.34 is on CRAN
-if (!xfun::loadable('devtools', new_session = TRUE)) install.packages('devtools')
-if (!xfun::loadable('RGtk2', new_session = TRUE)) {
-  install_dep('RGtk2')
-  devtools::install_github('lawremi/RGtk2/RGtk2')
-}
-# TODO: remove this when cairoDevice > 2.24 is on CRAN
-if (!xfun::loadable('cairoDevice', new_session = TRUE)) {
-  install_dep('cairoDevice')
-  devtools::install_github('lawremi/cairoDevice')
-}
+db = available.packages(type = 'source')
 
 # make sure these packages' dependencies are installed
 for (pkg in pkgs <- readLines('packages')) {
@@ -50,7 +40,6 @@ tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
 file.remove(tgz[!(gsub('_.*', '', basename(tgz)) %in% pkgs)])
 
 # download source packages that have been updated on CRAN
-db = available.packages(type = 'source')
 if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
   info = read.dcf(pkg_file, c('Package', 'Version'))
   pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
@@ -58,23 +47,6 @@ if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
 pkgs = intersect(pkgs, db[, 'Package'])
 
 if (length(pkgs) == 0) q('no')
-
-# TODO: remove this when RGtk2 > 2.20.34 is on CRAN
-if ('RGtk2' %in% pkgs && db['RGtk2', 'Version'] == '2.20.34') {
-  system('brew install gtk+')
-  system('git clone --depth=1 https://github.com/lawremi/RGtk2.git')
-  system('R CMD build RGtk2/RGtk2')
-  unlink('RGtk2', recursive = TRUE)
-  pkgs = setdiff(pkgs, 'RGtk2')
-}
-# TODO: remove this when cairoDevice > 2.24 is on CRAN
-if ('cairoDevice' %in% pkgs && db['cairoDevice', 'Version'] == '2.24') {
-  system('brew install cairo')
-  system('git clone --depth=1 https://github.com/lawremi/cairoDevice.git')
-  system('R CMD build cairoDevice')
-  unlink('cairoDevice', recursive = TRUE)
-  pkgs = setdiff(pkgs, 'cairoDevice')
-}
 
 for (pkg in pkgs) xfun:::download_tarball(pkg, db)
 
