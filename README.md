@@ -81,7 +81,7 @@ Here is my challenge: Is it possible to define the macro `PLATFORM_PKGTYPE` in t
 
 It is certainly not as simple as `brew uninstall r` if you installed `R-x.x.x.pkg` [from CRAN](https://cran.rstudio.com/bin/macosx/). You may also have installed customized versions of Clang and GNU Fortran from there. And have you downloaded and installed XQuartz manually, too? To get rid of these packages, you need to carefully read the Stack Overflow post "[Uninstall packages in Mac OS X](https://stackoverflow.com/q/25925752/559676)" (use `pkgutil --pkgs | grep r-project` to get a possible list of packages, and note that you may have installed multiple versions of R without realizing it). Please be really cautious. I once deleted my whole `/usr` directory by accident because I forgot the `--only-files` flag when calling `pkgutil`.
 
-Given the complexity, I believe you only want to do this once in your life. Of course, this is not a problem of R _per se_, but a general problem of macOS. I think even Windows is better in terms of uninstalling software.
+Given the complexity, I believe you don't want to do this twice in your life. Of course, this is not a problem of R _per se_, but a general problem of macOS. I think even Windows is better in terms of uninstalling software.
 
 ## Disclaimer
 
