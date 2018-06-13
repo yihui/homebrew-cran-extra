@@ -7,7 +7,7 @@ The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/h
 ```r
 # you may do this in your ~/.Rprofile so you don't have to do it every time
 local({
-  if (Sys.info()[['sysname']] != 'Darwin') return()
+  if (Sys.info()[['sysname']] != 'Darwin') return(invisible())
 
   # a very dirty hack to be explained later
   .Platform$pkgType = 'mac.binary.el-capitan'
