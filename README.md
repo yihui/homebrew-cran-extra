@@ -2,10 +2,10 @@
 
 [![Travis build status](https://travis-ci.com/yihui/homebrew-r-packages.svg?branch=master)](https://travis-ci.com/yihui/homebrew-r-packages)
 
-The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-r-packages)) provides some binary R packages for the Homebrew version of base R on macOS. If you are using the Homebrew version of R on the latest version of macOS, you may set these options, and install the binary packages with `install.packages()`:
+The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-r-packages)) provides some binary R packages for the Homebrew version of base R on macOS. If you are using the Homebrew version of R on the latest version of macOS, you may set these options in R first:
 
 ```r
-# you may want to do this in your ~/.Rprofile
+# you may do this in your ~/.Rprofile so you don't have to do it every time
 local({
   if (Sys.info()[['sysname']] != 'Darwin) return()
 
@@ -20,8 +20,11 @@ local({
     repos = 'https://macos.rbind.org'
   )
 })
+```
 
-# then you will be able to install some binary packages, e.g.,
+Then you will be able to install some binary packages with `install.packages()`, e.g.,
+
+```r
 install.packages(c('stringi', 'dplyr'))
 ```
 
