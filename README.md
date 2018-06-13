@@ -2,7 +2,7 @@
 
 [![Travis build status](https://travis-ci.com/yihui/homebrew-r-packages.svg?branch=master)](https://travis-ci.com/yihui/homebrew-r-packages)
 
-The repository https://macos.rbind.org provides some binary R packages for the Homebrew version of base R on macOS. If you are using the Homebrew version of R on the latest version of macOS, you may set these options, and install the binary packages with `install.packages()`:
+The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-r-packages)) provides some binary R packages for the Homebrew version of base R on macOS. If you are using the Homebrew version of R on the latest version of macOS, you may set these options, and install the binary packages with `install.packages()`:
 
 ```r
 # you may want to do this in your ~/.Rprofile
@@ -20,6 +20,9 @@ local({
     repos = 'https://macos.rbind.org'
   )
 })
+
+# then you will be able to install some binary packages, e.g.,
+install.packages(c('stringi', 'dplyr'))
 ```
 
 To see which packages are available, open the [packages](https://github.com/yihui/homebrew-r-packages/blob/master/packages) file in this repo, or use the function `available.packages()` in R:
@@ -44,13 +47,15 @@ Basically, if you choose to use the Homebrew version of R, you have to install R
 
 ## Scope of the repository
 
-First of all, the repository https://macos.rbind.org does not intend to provide binaries of _all_ packages on CRAN. Its spirit is more like the repository https://www.stats.ox.ac.uk/pub/RWin/ for R on Windows. It is targeted at at two types of R packages: those that take long time to compile (such as **stringi**, which can take several minutes), and those with relatively heavy system dependencies (such as **RGtk2**, which requires `gtk+`). Among these packages, currently I manually selected a few that I need to install in my system. To see how I looked for packages that take long time to compile, see the script [packages.R](https://github.com/yihui/homebrew-r-packages/blob/master/packages.R):
+First of all, the repository https://macos.rbind.org does not intend to provide binaries of _all_ packages on CRAN. Its spirit is more like the repository https://www.stats.ox.ac.uk/pub/RWin/ for R on Windows. It is targeted at two types of R packages: those that take long time to compile (such as **stringi**, which can take several minutes), and those with relatively heavy system dependencies (such as **RGtk2**, which requires `gtk+`). Among these packages, currently I manually selected a few that I need to install in my system. To see how I looked for packages that take long time to compile, see the script [packages.R](https://github.com/yihui/homebrew-r-packages/blob/master/packages.R):
 
 ```r
 `r xfun::file_string('packages.R')`
 ```
 
-If there are any other packages that you frequently use and satisfy the above conditions, please free free to [edit the `packages` file](https://github.com/yihui/homebrew-r-packages/edit/master/packages) and submit a pull request.
+If there are any other packages that you frequently use and satisfy the above criteria, please free free to [edit the `packages` file](https://github.com/yihui/homebrew-r-packages/edit/master/packages) and submit a pull request.
+
+The repository is automatically updated daily (from Travis CI), which means if a new version of a source R package appears on CRAN, and the package is included in this repository, the binary package should be available in less than 24 hours.
 
 If you try to install a package from https://macos.rbind.org but its binary package is not available, it will automatically redirect you to the RStudio CRAN mirror https://cran.rstudio.com and let you install the source package instead.
 
@@ -80,4 +85,4 @@ Given the complexity, I believe you only want to do this once in your life. Of c
 
 ## Disclaimer
 
-This was pretty much a two-day side-project on which I worked when I was trying to install thousands of R packages to check the reverse dependencies of **knitr** and **rmarkdown**. I had been frustrated enough by certain problems such as the missing **RGtk2** binary on CRAN, and finally decided to take a stab at building binary R packages for the Homebrew version of R. However, my knowledge in this area is fairly limited, so please consider this repository as experimental before experts join me. I'd welcome anyone to help with this project. In the same spirit of Homebrew, I really wish this will become a project maintained by the community instead of me alone. 
+This was pretty much a two-day side-project on which I worked when I was trying to install thousands of R packages to check the reverse dependencies of **knitr** and **rmarkdown**. I had been frustrated enough by certain problems such as the missing **RGtk2** binary on CRAN, and finally decided to take a stab at building binary R packages for the Homebrew version of R. However, my knowledge in this area is fairly limited, so please consider this repository as experimental before real experts join me. I'd welcome anyone to help with this project. In the same spirit of Homebrew, I really wish this will become a project maintained by the community instead of me alone. 
