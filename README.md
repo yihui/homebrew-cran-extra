@@ -87,6 +87,10 @@ Given the complexity, I believe you don't want to do this twice in your life. Of
 
 This was pretty much a two-day side-project on which I worked when I was trying to install thousands of R packages to check the reverse dependencies of **knitr** and **rmarkdown**. I had been frustrated enough by certain problems such as the missing **RGtk2** binary on CRAN, and finally decided to take a stab at building binary R packages for the Homebrew version of R. However, my knowledge in this area is fairly limited, so please consider this repository as experimental before real experts join me. I'd welcome anyone to help with this project. In the same spirit of Homebrew, I really wish this will become a project maintained by the community instead of me alone. 
 
+## Related work
+
+Jeroen Ooms has worked on building binary R packages with the CRAN version of R. You can find more information in the Github repo <https://github.com/r-hub/homebrew-cran>. As I have indicated, I'm not interested in the CRAN version of R, and I prefer everything being in the Homebrew world if possible.
+
 ## License
 
 The source code in the [Github repo](https://github.com/yihui/homebrew-r-packages) is licensed under MIT. For the R packages, please consult their DESCRIPTION files for their specific licenses. The copyright of these packages belongs to their original authors. You may obtain the source code of these R packages from CRAN if you wish to.
