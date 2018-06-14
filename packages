@@ -1,3 +1,8 @@
+RGtk2
+RProtoBuf
+RSQLite
+Rcpp
+XML
 cairoDevice
 commonmark
 curl
@@ -11,14 +16,9 @@ later
 lme4
 markdown
 openssl
-RGtk2
-RProtoBuf
-RSQLite
-Rcpp
 readr
 roxygen2
 rstan
 spatstat
 stringi
-XML
 xml2
