@@ -20,4 +20,5 @@ roxygen2
 rstan
 spatstat
 stringi
+XML
 xml2
