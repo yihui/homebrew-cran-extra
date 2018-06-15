@@ -7,7 +7,9 @@ install_dep = function(pkg) {
   dep = c(
     RGtk2 = 'gtk+',
     RProtoBuf = 'protobuf',
-    cairoDevice = 'cairo pkg-config gtk+'
+    cairoDevice = 'cairo pkg-config gtk+',
+    rgdal = 'gdal',
+    rgeos = 'geos'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep))
 }

@@ -17,6 +17,8 @@ lme4
 markdown
 openssl
 readr
+rgdal
+rgeos
 roxygen2
 rstan
 spatstat
