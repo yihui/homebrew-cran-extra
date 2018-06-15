@@ -11,7 +11,7 @@ install_dep = function(pkg) {
     rgdal = 'gdal',
     rgeos = 'geos'
   )[pkg]
-  if (!is.na(dep)) system(paste('brew install', dep))
+  if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
 }
 
 # install xfun (from Github)
