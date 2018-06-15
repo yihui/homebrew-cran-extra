@@ -20,6 +20,7 @@ if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.1
 }
 
 db = available.packages(type = 'source')
+update.packages(ask = FALSE, checkBuilt = TRUE)
 
 # make sure these packages' dependencies are installed (knitr is only for the homepage)
 for (pkg in c('knitr', xfun:::pkg_dep(pkgs <- readLines('packages'), db))) {
