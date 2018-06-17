@@ -14,13 +14,13 @@ install_dep = function(pkg) {
   if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
 }
 
-# install xfun (from Github)
-if (!requireNamespace('xfun', quietly = TRUE) || packageVersion('xfun') < '0.1.10') {
-  source('https://install-github.me/yihui/xfun')
-}
-
 db = available.packages(type = 'source')
 update.packages(ask = FALSE, checkBuilt = TRUE)
+
+# install xfun at least 0.2
+if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
+  install.packages('xfun')
+}
 
 # make sure these packages' dependencies are installed (knitr is only for the homepage)
 for (pkg in c('knitr', xfun:::pkg_dep(pkgs <- readLines('packages'), db))) {
