@@ -1,8 +1,8 @@
 options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
 # install xfun at least 0.2
-if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
-  install.packages('xfun')
+if (tryCatch(packageVersion('xfun') <= '0.2', error = function(e) TRUE)) {
+  source('https://install-github.me/yihui/xfun')
 }
 
 db = available.packages(type = 'source')
@@ -100,6 +100,11 @@ build_one = function(pkg) {
   for (p in deps) {
     if (xfun::loadable(p)) next
     install.packages(p, repos = c(getOption('repos'), 'https://macos.rbind.org'))
+  }
+  # TODO: remove the hack after libstableR is updated on CRAN
+  # (https://github.com/swihart/libstableR/issues/1)
+  if (pkg == 'libstableR' && db['libstableR', 'Version'] <= package_version('1.0')) {
+    xfun::download_file('https://github.com/swihart/libstableR/archive/master.tar.gz', names(pkg))
   }
   # autobrew assumes static linking, which may be difficult or impossible for
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
