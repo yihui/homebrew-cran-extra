@@ -18,10 +18,10 @@ update.packages(ask = FALSE, checkBuilt = TRUE)
 db2 = available.packages(type = 'binary')
 pkgs = setdiff(rownames(db), rownames(db2))
 pkgs = pkgs[db[pkgs, 'NeedsCompilation'] == 'yes']
-pkgs = setdiff(pkgs, scan('ignore'))
+pkgs = setdiff(pkgs, readLines('ignore'))
 
 # manually specify a subset of packages to be built
-if (file.exists('subset')) pkgs = intersect(pkgs, scan('subset'))
+if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
 
 # install xfun at least 0.2
 if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
