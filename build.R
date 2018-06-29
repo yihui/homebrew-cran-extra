@@ -10,6 +10,7 @@ if (!file.exists('~/.R/Makevars'))
 install_dep = function(pkg) {
   dep = c(
     glpkAPI = 'glpk',
+    qtbase = 'qt',
     RDieHarder = 'dieharder',
     Rgnuplot = 'gnuplot',
     RQuantLib = 'quantlib',
