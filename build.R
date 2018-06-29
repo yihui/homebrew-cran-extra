@@ -14,6 +14,8 @@ install_dep = function(pkg) {
     RDieHarder = 'dieharder',
     Rgnuplot = 'gnuplot',
     RQuantLib = 'quantlib',
+    RcppMeCab = 'mecab',
+    RGtk2Extras = 'gtk+',
     Rglpk = 'glpk'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
