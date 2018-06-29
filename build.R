@@ -10,6 +10,9 @@ if (!file.exists('~/.R/Makevars'))
 install_dep = function(pkg) {
   dep = c(
     glpkAPI = 'glpk',
+    RDieHarder = 'dieharder',
+    Rgnuplot = 'gnuplot',
+    RQuantLib = 'quantlib',
     Rglpk = 'glpk'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
