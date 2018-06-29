@@ -1,10 +1,19 @@
-language: r
+language: ruby
 os: osx
 osx_image: xcode9.3
 
-cache: packages
+env:
+  - R_LIBS_USER=~/R
+
+cache:
+  directories:
+    - $HOME/R
+
+before_install:
+  - mkdir -p ~/R
 
 install:
+  - brew cask install r-app gfortran
   - brew tap r-hub/cran
   - brew install autobrew
 

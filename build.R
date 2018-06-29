@@ -34,7 +34,6 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
-unlink(dir, recursive = TRUE)
 
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
@@ -52,15 +51,23 @@ pkgs = intersect(pkgs, db[, 'Package'])
 if (length(pkgs) == 0) q('no')
 
 for (pkg in pkgs) xfun:::download_tarball(pkg, db)
+srcs = list.files('.', '.+[.]tar[.]gz$')
+pkgs = gsub('_.*$', '', srcs)
+names(pkgs) = srcs
 
 failed = NULL
 # build binary packages
-for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
-  p = gsub('_.*$', '', pkg)
+build_one = function(pkg) {
   # remove existing binary packages
-  file.remove(list.files(dir, paste0('^', p, '_.+[.]tgz$'), full.names = TRUE))
-  if (system2('autobrew', pkg) != 0) failed = c(failed, p)
+  file.remove(list.files(dir, paste0('^', pkg, '_.+[.]tgz$'), full.names = TRUE))
+  # skip if already built
+  if (length(list.files('.', paste0('^', pkg, '_.+[.]tgz$')))) return()
+  for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(p)
+  message('Building ', pkg)
+  if (system2('autobrew', names(pkg)) != 0) failed <<- c(failed, pkg)
 }
+for (i in seq_along(pkgs)) build_one(pkgs[i])
+
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
 
 dir.create(dir, recursive = TRUE, showWarnings = FALSE)
