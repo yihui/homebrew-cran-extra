@@ -94,8 +94,10 @@ build_one = function(pkg) {
   for (p in intersect(pkgs, deps <- xfun:::pkg_dep(pkg, db))) build_one(pkgs[pkgs == p])
   message('Building ', pkg)
   install_dep(pkg)
-  if (length(deps))
-    install.packages(deps, repos = c(getOption('repos'), 'https://macos.rbind.org'))
+  for (p in deps) {
+    if (xfun::loadable(p)) next
+    install.packages(p, repos = c(getOption('repos'), 'https://macos.rbind.org'))
+  }
   # autobrew assumes static linking, which may be difficult or impossible for
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
   # autobrew fails, but this means we will rely on dynamic linking
