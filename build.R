@@ -47,7 +47,7 @@ home = local({
   x = xfun::read_utf8('README.md')
   x[1] = paste0(x[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
   xfun::write_utf8(x, 'index.Rmd')
-  on.exit(file.remove(c('index.md', 'index.Rmd')), add = TRUE)
+  on.exit(file.remove(list.files('.', '^index[.][a-z]+$', ignore.case = TRUE)), add = TRUE)
   xfun::pkg_load2('knitr')
   knitr::rocco('index.Rmd', encoding = 'UTF-8')
   xfun::read_utf8('index.html')
