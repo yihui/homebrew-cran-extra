@@ -63,7 +63,11 @@ pkgs = intersect(pkgs, db[, 'Package'])
 
 if (length(pkgs) == 0) q('no')
 
-for (pkg in pkgs) xfun:::download_tarball(pkg, db)
+for (pkg in pkgs) {
+  # dependency not available on CRAN
+  if (!all(xfun:::pkg_dep(pkg, db) %in% rownames(db))) next
+  xfun:::download_tarball(pkg, db)
+}
 srcs = list.files('.', '.+[.]tar[.]gz$')
 pkgs = gsub('_.*$', '', srcs)
 names(pkgs) = srcs
