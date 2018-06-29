@@ -10,25 +10,29 @@ update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
+dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
 
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
+sysreqsdb = c(
+  glpkAPI = 'glpk',
+  Rglpk = 'glpk',
+  rDEA = 'glpk',
+  qtbase = 'qt',
+  Rhpc = 'open-mpi',
+  RDieHarder = 'dieharder',
+  Rgnuplot = 'gnuplot',
+  RQuantLib = 'quantlib',
+  RcppMeCab = 'mecab',
+  RGtk2 = 'gtk+',
+  cairoDevice = 'cairo',
+  libstableR = 'gsl'
+)
+saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 install_dep = function(pkg) {
-  dep = c(
-    glpkAPI = 'glpk',
-    Rglpk = 'glpk',
-    rDEA = 'glpk',
-    qtbase = 'qt',
-    Rhpc = 'open-mpi',
-    RDieHarder = 'dieharder',
-    Rgnuplot = 'gnuplot',
-    RQuantLib = 'quantlib',
-    RcppMeCab = 'mecab',
-    RGtk2 = 'gtk+',
-    cairoDevice = 'cairo',
-    libstableR = 'gsl'
-  )[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
+  dep = sysreqsdb[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
   dep = paste(na.omit(dep), collapse = ' ')
   if (dep != '') system(paste('brew install', dep))
 }
@@ -118,8 +122,6 @@ build_one = function(pkg) {
 for (i in seq_along(pkgs)) build_one(pkgs[i])
 
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
-
-dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
 file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
