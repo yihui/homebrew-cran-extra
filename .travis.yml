@@ -13,7 +13,7 @@ before_install:
   - mkdir -p ~/R
 
 install:
-  - brew cask install r-app gfortran
+  - brew cask install r-app gfortran xquartz
   - brew tap r-hub/cran
   - brew install autobrew
 

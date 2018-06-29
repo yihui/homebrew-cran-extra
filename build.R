@@ -2,6 +2,14 @@ options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
+# install brew dependencies that are not available in r-hub/sysreqsdb yet
+install_dep = function(pkg) {
+  dep = c(
+    glpkAPI = 'glpk',
+    Rglpk = 'glpk'
+  )[pkg]
+  if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
+}
 
 db = available.packages(type = 'source')
 update.packages(ask = FALSE, checkBuilt = TRUE)
@@ -11,6 +19,9 @@ db2 = available.packages(type = 'binary')
 pkgs = setdiff(rownames(db), rownames(db2))
 pkgs = pkgs[db[pkgs, 'NeedsCompilation'] == 'yes']
 pkgs = setdiff(pkgs, scan('ignore'))
+
+# manually specify a subset of packages to be built
+if (file.exists('subset')) pkgs = intersect(pkgs, scan('subset'))
 
 # install xfun at least 0.2
 if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
@@ -64,6 +75,7 @@ build_one = function(pkg) {
   if (length(list.files('.', paste0('^', pkg, '_.+[.]tgz$')))) return()
   for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(p)
   message('Building ', pkg)
+  install_dep(pkg)
   if (system2('autobrew', names(pkg)) != 0) failed <<- c(failed, pkg)
 }
 for (i in seq_along(pkgs)) build_one(pkgs[i])
