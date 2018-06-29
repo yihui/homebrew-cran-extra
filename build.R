@@ -6,7 +6,7 @@ if (tryCatch(packageVersion('xfun') <= '0.2', error = function(e) TRUE)) {
 }
 
 db = available.packages(type = 'source')
-update.packages(ask = FALSE, checkBuilt = TRUE)
+update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
