@@ -1,21 +1,12 @@
-language: ruby
+language: r
 os: osx
 osx_image: xcode9.3
 
-env:
-  - R_LIBS_USER=~/R
-
-cache:
-  directories:
-    - $HOME/R
-
-before_install:
-  - mkdir -p ~/R
+cache: packages
 
 install:
-  - brew install gcc || true
-  - brew link --overwrite gcc
-  - brew install r
+  - brew tap r-hub/cran
+  - brew install autobrew
 
 script:
   - ./build.sh

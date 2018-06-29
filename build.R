@@ -2,32 +2,19 @@ options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
-# install brew dependencies
-install_dep = function(pkg) {
-  dep = c(
-    RGtk2 = 'gtk+',
-    RProtoBuf = 'protobuf',
-    cairoDevice = 'cairo pkg-config gtk+',
-    rgdal = 'gdal',
-    rgeos = 'geos'
-  )[pkg]
-  if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
-}
 
 db = available.packages(type = 'source')
 update.packages(ask = FALSE, checkBuilt = TRUE)
 
+# only build packages that needs compilation and don't have binaries on CRAN
+db2 = available.packages(type = 'binary')
+pkgs = setdiff(rownames(db), rownames(db2))
+pkgs = pkgs[db[pkgs, 'NeedsCompilation'] == 'yes']
+pkgs = setdiff(pkgs, scan('ignore'))
+
 # install xfun at least 0.2
 if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
   install.packages('xfun')
-}
-
-# make sure these packages' dependencies are installed (knitr is only for the homepage)
-for (pkg in c('knitr', xfun:::pkg_dep(pkgs <- readLines('packages'), db))) {
-  if (!xfun::loadable(pkg, new_session = TRUE)) {
-    install_dep(pkg)
-    if (!xfun::loadable(pkg, new_session = TRUE)) install.packages(pkg)
-  }
 }
 
 # render the homepage index.html
@@ -35,6 +22,7 @@ home = local({
   x = xfun::read_utf8('README.md')
   x[1] = paste0(x[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
   xfun::write_utf8(x, 'index.Rmd'); on.exit(unlink('index.*'), add = TRUE)
+  xfun::pkg_load2('knitr')
   knitr::rocco('index.Rmd', encoding = 'UTF-8')
   xfun::read_utf8('index.html')
 })
@@ -46,9 +34,10 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
+unlink(dir, recursive = TRUE)
 
-# delete binaries that were removed from the ./packages file, or of multiple
-# versions of the same package
+# delete binaries that have become available on CRAN, or of multiple versions of
+# the same package
 tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
 tgz_name = gsub('_.*', '', basename(tgz))
 file.remove(tgz[!(tgz_name %in% pkgs) | duplicated(tgz_name, fromLast = TRUE)])
@@ -64,15 +53,15 @@ if (length(pkgs) == 0) q('no')
 
 for (pkg in pkgs) xfun:::download_tarball(pkg, db)
 
+failed = NULL
 # build binary packages
 for (pkg in list.files('.', '.+[.]tar[.]gz$')) {
-  install_dep(p <- gsub('_.*$', '', pkg))
+  p = gsub('_.*$', '', pkg)
   # remove existing binary packages
   file.remove(list.files(dir, paste0('^', p, '_.+[.]tgz$'), full.names = TRUE))
-  if (xfun::Rcmd(c('INSTALL', '--build', pkg)) != 0) stop(
-    'Failed to build the package ', pkg
-  )
+  if (system2('autobrew', pkg) != 0) failed = c(failed, p)
 }
+if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
 
 dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
