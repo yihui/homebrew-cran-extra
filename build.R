@@ -41,7 +41,7 @@ install_dep = function(pkg) {
 db2 = available.packages(type = 'binary')
 pkgs = setdiff(rownames(db), rownames(db2))
 pkgs = pkgs[db[pkgs, 'NeedsCompilation'] == 'yes']
-pkgs = setdiff(pkgs, readLines('ignore'))
+pkgs = setdiff(pkgs, readLines('ignore'))  # exclude pkgs that I'm unable to build
 
 # manually specify a subset of packages to be built
 if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
