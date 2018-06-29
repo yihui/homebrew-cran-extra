@@ -2,6 +2,10 @@ options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
+# no openmp support
+if (!file.exists('~/.R/Makevars'))
+  writeLines(c('SHLIB_OPENMP_CFLAGS=', 'SHLIB_OPENMP_CXXFLAGS='), '~/.R/Makevars')
+
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
 install_dep = function(pkg) {
   dep = c(

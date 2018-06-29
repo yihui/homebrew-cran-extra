@@ -11,6 +11,7 @@ cache:
 
 before_install:
   - mkdir -p ~/R
+  - mkdir -p ~/.R
 
 install:
   - brew cask install r-app gfortran xquartz
