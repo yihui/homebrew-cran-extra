@@ -11,14 +11,23 @@ install_dep = function(pkg) {
   dep = c(
     glpkAPI = 'glpk',
     sdcTable = 'glpk',
+    Rglpk = 'glpk',
+    rDEA = 'glpk',
     qtbase = 'qt',
+    qtpaint = 'qt',
+    Rhpc = 'open-mpi',
     RDieHarder = 'dieharder',
     Rgnuplot = 'gnuplot',
     RQuantLib = 'quantlib',
     RcppMeCab = 'mecab',
     RGtk2Extras = 'gtk+',
     gWidgetsRGtk2 = 'gtk+',
-    Rglpk = 'glpk'
+    playwith = 'gtk+',
+    GrammR = 'gtk+',
+    rsgcc = 'gtk+',
+    WMCapacity = 'gtk+',
+    kmcudaR = 'nvidia-cuda',
+    libstableR = 'gsl'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
 }

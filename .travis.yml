@@ -17,6 +17,7 @@ install:
   - brew cask install r-app gfortran xquartz
   - brew tap r-hub/cran
   - brew install autobrew
+  - brew tap homebrew/cask-drivers
 
 script:
   - export PATH=/usr/local/opt/qt/bin:$PATH
