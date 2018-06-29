@@ -75,7 +75,7 @@ build_one = function(pkg) {
   file.remove(list.files(dir, paste0('^', pkg, '_.+[.]tgz$'), full.names = TRUE))
   # skip if already built
   if (length(list.files('.', paste0('^', pkg, '_.+[.]tgz$')))) return()
-  for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(p)
+  for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(pkgs[pkgs == p])
   message('Building ', pkg)
   install_dep(pkg)
   # autobrew assumes static linking, which may be difficult or impossible for
