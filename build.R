@@ -78,7 +78,8 @@ build_one = function(pkg) {
   for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(p)
   message('Building ', pkg)
   install_dep(pkg)
-  if (system2('autobrew', names(pkg)) != 0) failed <<- c(failed, pkg)
+  if (system2('autobrew', names(pkg)) != 0 && xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
+    failed <<- c(failed, pkg)
 }
 for (i in seq_along(pkgs)) build_one(pkgs[i])
 
