@@ -28,17 +28,10 @@ install_dep = function(pkg) {
     RcppMeCab = 'mecab',
     RGtk2 = 'gtk+',
     cairoDevice = 'cairo',
-    kmcudaR = 'nvidia-cuda',
-    cudaBayesreg = 'nvidia-cuda',
     libstableR = 'gsl'
   )[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
   dep = paste(na.omit(dep), collapse = ' ')
-  if (dep == '') return()
-  if (dep == 'nvidia-cuda') {
-    system(paste('brew cask install', dep))
-  } else {
-    system(paste('brew install', dep, '|| brew upgrade', dep))
-  }
+  if (dep != '') system(paste('brew install', dep))
 }
 
 # only build packages that needs compilation and don't have binaries on CRAN
