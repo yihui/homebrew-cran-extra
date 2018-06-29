@@ -70,9 +70,10 @@ pkgs = intersect(pkgs, db[, 'Package'])
 
 if (length(pkgs) == 0) q('no')
 
+pkg_all = c(rownames(db), rownames(installed.packages()))
 for (pkg in pkgs) {
   # dependency not available on CRAN
-  if (!all(xfun:::pkg_dep(pkg, db) %in% rownames(db))) next
+  if (!all(xfun:::pkg_dep(pkg, db) %in% pkg_all)) next
   xfun:::download_tarball(pkg, db)
 }
 srcs = list.files('.', '.+[.]tar[.]gz$')
