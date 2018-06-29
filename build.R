@@ -12,7 +12,6 @@ ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
-xfun::file_string('~/.R/Makevars')
 
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
 install_dep = function(pkg) {
