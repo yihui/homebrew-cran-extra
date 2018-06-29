@@ -16,6 +16,7 @@ install_dep = function(pkg) {
     RQuantLib = 'quantlib',
     RcppMeCab = 'mecab',
     RGtk2Extras = 'gtk+',
+    gWidgetsRGtk2 = 'gtk+',
     Rglpk = 'glpk'
   )[pkg]
   if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
