@@ -117,6 +117,7 @@ dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
 file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
 unlink(c('*.tar.gz', '*.tgz'))
+unlink('PACKAGES*')
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
 
