@@ -19,4 +19,5 @@ install:
   - brew install autobrew
 
 script:
+  - export PATH=/usr/local/opt/qt/bin:$PATH
   - ./build.sh
