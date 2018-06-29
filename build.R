@@ -30,7 +30,6 @@ sysreqsdb = c(
   cairoDevice = 'cairo',
   libstableR = 'gsl'
 )
-saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 install_dep = function(pkg) {
   dep = sysreqsdb[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
   dep = paste(na.omit(dep), collapse = ' ')
@@ -64,6 +63,7 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
+saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
