@@ -1,6 +1,6 @@
 language: ruby
 os: osx
-osx_image: xcode9.3
+osx_image: xcode9.4
 
 env:
   - R_LIBS_USER=~/R
@@ -13,8 +13,7 @@ before_install:
   - mkdir -p ~/R
 
 install:
-  - brew cask install r-app gfortran
-  - brew cask reinstall xquartz
+  - brew cask install r-app gfortran xquartz
   - brew tap r-hub/cran
   - brew install autobrew
 
