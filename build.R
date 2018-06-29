@@ -1,39 +1,45 @@
 options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
+# install xfun at least 0.2
+if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
+  install.packages('xfun')
+}
+
+db = available.packages(type = 'source')
+update.packages(ask = FALSE, checkBuilt = TRUE)
+
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
 # no openmp support
-if (!file.exists('~/.R/Makevars'))
-  writeLines(c('SHLIB_OPENMP_CFLAGS=', 'SHLIB_OPENMP_CXXFLAGS='), '~/.R/Makevars')
+cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
+xfun::file_string('~/.R/Makevars')
 
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
 install_dep = function(pkg) {
   dep = c(
     glpkAPI = 'glpk',
-    sdcTable = 'glpk',
     Rglpk = 'glpk',
     rDEA = 'glpk',
     qtbase = 'qt',
-    qtpaint = 'qt',
     Rhpc = 'open-mpi',
     RDieHarder = 'dieharder',
     Rgnuplot = 'gnuplot',
     RQuantLib = 'quantlib',
     RcppMeCab = 'mecab',
-    RGtk2Extras = 'gtk+',
-    gWidgetsRGtk2 = 'gtk+',
-    playwith = 'gtk+',
-    GrammR = 'gtk+',
-    rsgcc = 'gtk+',
-    WMCapacity = 'gtk+',
+    RGtk2 = 'gtk+',
+    cairoDevice = 'cairo',
     kmcudaR = 'nvidia-cuda',
+    cudaBayesreg = 'nvidia-cuda',
     libstableR = 'gsl'
-  )[pkg]
-  if (!is.na(dep)) system(paste('brew install', dep, '|| brew upgrade', dep))
+  )[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
+  dep = paste(na.omit(dep), collapse = ' ')
+  if (dep == '') return()
+  if (dep == 'nvidia-cuda') {
+    system(paste('brew cask install', dep))
+  } else {
+    system(paste('brew install', dep, '|| brew upgrade', dep))
+  }
 }
-
-db = available.packages(type = 'source')
-update.packages(ask = FALSE, checkBuilt = TRUE)
 
 # only build packages that needs compilation and don't have binaries on CRAN
 db2 = available.packages(type = 'binary')
@@ -43,11 +49,6 @@ pkgs = setdiff(pkgs, readLines('ignore'))
 
 # manually specify a subset of packages to be built
 if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
-
-# install xfun at least 0.2
-if (tryCatch(packageVersion('xfun') < '0.2', error = function(e) TRUE)) {
-  install.packages('xfun')
-}
 
 # render the homepage index.html
 home = local({
