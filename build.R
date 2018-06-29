@@ -78,6 +78,9 @@ build_one = function(pkg) {
   for (p in intersect(pkgs, xfun:::pkg_dep(pkg, db))) build_one(p)
   message('Building ', pkg)
   install_dep(pkg)
+  # autobrew assumes static linking, which may be difficult or impossible for
+  # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
+  # autobrew fails, but this means we will rely on dynamic linking
   if (system2('autobrew', names(pkg)) != 0 && xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
     failed <<- c(failed, pkg)
 }
