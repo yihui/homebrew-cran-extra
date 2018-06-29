@@ -1,34 +1,25 @@
-# Binary R packages for the Homebrew R
+# Extra Binary R packages for the Homebrew R (Cask)
 
-[![Travis build status](https://travis-ci.com/yihui/homebrew-r-packages.svg?branch=master)](https://travis-ci.com/yihui/homebrew-r-packages)
+[![Travis build status](https://travis-ci.com/yihui/homebrew-cran-extra.svg?branch=master)](https://travis-ci.com/yihui/homebrew-cran-extra)
 
-The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-r-packages)) provides some binary R packages for the Homebrew version of base R on macOS. If you are using the Homebrew version of R on the latest version of macOS, you may set these options in R first:
+The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-cran-extra)) provides some binary R packages for the Homebrew (cask) version of base R that are currently missing on CRAN, in a similar spirit as the "CRAN extras" repository for Windows: https://www.stats.ox.ac.uk/pub/RWin/. If you are using the Homebrew version of R on the latest version of macOS, you may set the `repos` option in R first:
 
 ```r
 # you may do this in your ~/.Rprofile so you don't have to do it every time
-local({
-  if (Sys.info()[['sysname']] != 'Darwin') return(invisible())
-
-  # a very dirty hack to be explained later
-  .Platform$pkgType = 'mac.binary.el-capitan'
-  unlockBinding('.Platform', baseenv())
-  assign('.Platform', .Platform, 'package:base')
-  lockBinding('.Platform', baseenv())
-
-  options(
-    pkgType = 'both', install.packages.compile.from.source = 'always',
-    repos = 'https://macos.rbind.org'
-  )
-})
+options(repos = c(
+  CRAN = 'https://cran.rstudio.com', CRANextra = 'https://macos.rbind.org'
+))
 ```
+
+Note that the `CRAN` repository does not have to be `https://cran.rstudio.com`. It can be any other CRAN mirror.
 
 Then you will be able to install some binary packages with `install.packages()`, e.g.,
 
 ```r
-install.packages(c('stringi', 'dplyr'))
+install.packages(c('cairoDevice', 'RGtk2'))
 ```
 
-To see which packages are available, open the [packages](https://github.com/yihui/homebrew-r-packages/blob/master/packages) file in this repo, or use the function `available.packages()` in R:
+To see which packages are available, use the function `available.packages()` in R:
 
 ```r
 available.packages(repos = 'https://macos.rbind.org', type = 'binary')
@@ -50,13 +41,13 @@ Basically, if you choose to use the Homebrew version of R, you have to install R
 
 ## Scope of the repository
 
-First of all, the repository https://macos.rbind.org does not intend to provide binaries of _all_ packages on CRAN. Its spirit is more like the repository https://www.stats.ox.ac.uk/pub/RWin/ for R on Windows. It is targeted at two types of R packages: those that take long time to compile (such as **stringi**, which can take several minutes), and those with relatively heavy system dependencies (such as **RGtk2**, which requires `gtk+`). Among these packages, currently I manually selected a few that I need to install in my system. To see how I looked for packages that take long time to compile, see the script [packages.R](https://github.com/yihui/homebrew-r-packages/blob/master/packages.R):
+First of all, the repository https://macos.rbind.org does not intend to provide binaries of _all_ packages on CRAN. Its spirit is more like the repository https://www.stats.ox.ac.uk/pub/RWin/ for R on Windows. It is targeted at two types of R packages: those that take long time to compile (such as **stringi**, which can take several minutes), and those with relatively heavy system dependencies (such as **RGtk2**, which requires `gtk+`). Among these packages, currently I manually selected a few that I need to install in my system. To see how I looked for packages that take long time to compile, see the script [packages.R](https://github.com/yihui/homebrew-cran-extra/blob/master/packages.R):
 
 ```r
 `r xfun::file_string('packages.R')`
 ```
 
-If there are any other packages that you frequently use and satisfy the above criteria, please free free to [edit the `packages` file](https://github.com/yihui/homebrew-r-packages/edit/master/packages) and submit a pull request.
+If there are any other packages that you frequently use and satisfy the above criteria, please free free to [edit the `packages` file](https://github.com/yihui/homebrew-cran-extra/edit/master/packages) and submit a pull request.
 
 The repository is automatically updated daily (from Travis CI), which means if a new version of a source R package appears on CRAN, and the package is included in this repository, the binary package should be available in less than 24 hours.
 
@@ -96,4 +87,4 @@ Jeroen Ooms has worked on building binary R packages with the CRAN version of R.
 
 ## License
 
-The source code in the [Github repo](https://github.com/yihui/homebrew-r-packages) is licensed under MIT. For the R packages, please consult their DESCRIPTION files for their specific licenses. The copyright of these packages belongs to their original authors. You may obtain the source code of these R packages from CRAN if you wish to.
+The source code in the [Github repo](https://github.com/yihui/homebrew-cran-extra) is licensed under MIT. For the R packages, please consult their DESCRIPTION files for their specific licenses. The copyright of these packages belongs to their original authors. You may obtain the source code of these R packages from CRAN if you wish to.
