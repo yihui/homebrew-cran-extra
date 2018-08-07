@@ -65,19 +65,19 @@ writeLines(c(
 ), '_redirects')
 saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 
-# download source packages that have been updated on CRAN
-if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
-  info = read.dcf(pkg_file, c('Package', 'Version'))
-  info = info[info[, 1] %in% rownames(db), , drop = FALSE]  # packages may be archived
-  pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
-}
-
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
 if (!file.exists('subset')) {
   tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
   tgz_name = gsub('_.*', '', basename(tgz))
   file.remove(tgz[!(tgz_name %in% pkgs) | duplicated(tgz_name, fromLast = TRUE)])
+}
+
+# download source packages that have been updated on CRAN
+if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
+  info = read.dcf(pkg_file, c('Package', 'Version'))
+  info = info[info[, 1] %in% rownames(db), , drop = FALSE]  # packages may be archived
+  pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
 }
 
 pkgs = intersect(pkgs, db[, 'Package'])
