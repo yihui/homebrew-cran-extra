@@ -44,6 +44,8 @@ pkgs = setdiff(pkgs, readLines('ignore'))  # exclude pkgs that I'm unable to bui
 
 # manually specify a subset of packages to be built
 if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
+# extra packages that must be built
+if (file.exists('extra')) pkgs = c(pkgs, readLines('extra'))
 
 # render the homepage index.html
 home = local({
