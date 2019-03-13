@@ -2,13 +2,13 @@
 
 [![Travis build status](https://travis-ci.com/yihui/homebrew-cran-extra.svg?branch=master)](https://travis-ci.com/yihui/homebrew-cran-extra)
 
-The repository https://macos.rbind.org ([Github repo](https://github.com/yihui/homebrew-cran-extra)) provides some binary R packages for the Homebrew (cask) version of base R that are currently missing on CRAN, in a similar spirit as the "CRAN extras" repository for Windows: https://www.stats.ox.ac.uk/pub/RWin/. If you are using the Homebrew version of R on the latest version of macOS, you may set the `repos` option in R first:
+The repository https://macos.rbind.io ([Github repo](https://github.com/yihui/homebrew-cran-extra)) provides some binary R packages for the Homebrew (cask) version of base R that are currently missing on CRAN, in a similar spirit as the "CRAN extras" repository for Windows: https://www.stats.ox.ac.uk/pub/RWin/. If you are using the Homebrew version of R on the latest version of macOS, you may set the `repos` option in R first:
 
 ```r
 # you may do this in your ~/.Rprofile so you don't have to do it every time
 options(repos = c(
   CRAN = 'https://cran.rstudio.com',
-  CRANextra = 'https://macos.rbind.org'
+  CRANextra = 'https://macos.rbind.io'
 ))
 ```
 
@@ -24,7 +24,7 @@ To see which packages are available, use the function `available.packages()` in 
 
 ```{r}
 rownames(available.packages(
-  repos = 'https://macos.rbind.org', type = 'binary'
+  repos = 'https://macos.rbind.io', type = 'binary'
 ))
 ```
 
@@ -42,7 +42,7 @@ The R installer you manually downloaded and installed from CRAN should also work
 
 ## Scope of the repository
 
-The repository https://macos.rbind.org does not provide binary packages of these packages:
+The repository https://macos.rbind.io does not provide binary packages of these packages:
 
 1. Packages of which the binaries already exist on CRAN (the package names are obtained as the differences between `available.packages(type = 'source')` and `available.packages(type = 'binary')`).
 
@@ -54,7 +54,7 @@ The repository is automatically updated daily from [Travis CI](https://travis-ci
 
 ## Instructions on system dependencies
 
-Some packages only require system dependencies at the build time, e.g., the R package **xml2** requires the brew package `libxml2` when building it from source, but `libxml2` is no longer needed once the binary package is built (after `install.packages('xml2')`, you can remove `libxml2`). However, some packages still need the system dependencies at the run time, such as **RGtk2** (you cannot `brew uninstall gtk+`). To install the system dependencies after installing a binary R package from `macos.rbind.org`, you may try:
+Some packages only require system dependencies at the build time, e.g., the R package **xml2** requires the brew package `libxml2` when building it from source, but `libxml2` is no longer needed once the binary package is built (after `install.packages('xml2')`, you can remove `libxml2`). However, some packages still need the system dependencies at the run time, such as **RGtk2** (you cannot `brew uninstall gtk+`). To install the system dependencies after installing a binary R package from `macos.rbind.io`, you may try:
 
 ```r
 devtools::install_github('yihui/xfun')
@@ -67,7 +67,7 @@ My knowledge of building binary R packages is fairly limited, so please consider
 
 ## Related work
 
-This repository is based on Jeroen Ooms's work <https://github.com/r-hub/homebrew-cran>. My major work was to create an actual CRAN-like repository to host the binary packages, and figure out the brew package dependencies for a few R packages that are not (yet) covered by the `r-hub/homebrew-cran` project. Please note that `r-hub/homebrew-cran` aims at _static linking_, so that you can get rid of the brew packages once the binary R packages are built, but some binary packages in this repo `macos.rbind.org` still require the brew packages to remain installed in your system (such as **RGtk2**, which requires `brew install gtk+`).
+This repository is based on Jeroen Ooms's work <https://github.com/r-hub/homebrew-cran>. My major work was to create an actual CRAN-like repository to host the binary packages, and figure out the brew package dependencies for a few R packages that are not (yet) covered by the `r-hub/homebrew-cran` project. Please note that `r-hub/homebrew-cran` aims at _static linking_, so that you can get rid of the brew packages once the binary R packages are built, but some binary packages in this repo `macos.rbind.io` still require the brew packages to remain installed in your system (such as **RGtk2**, which requires `brew install gtk+`).
 
 ## License
 

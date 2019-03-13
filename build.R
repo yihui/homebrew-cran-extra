@@ -62,6 +62,7 @@ system('git checkout gh-pages')
 unlink(c('CNAME', 'src'), recursive = TRUE)
 xfun::write_utf8(home, 'index.html')
 writeLines(c(
+  'https://macos.rbind.org/*  https://macos.rbind.io/:splat  301!',
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
