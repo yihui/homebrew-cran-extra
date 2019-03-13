@@ -28,6 +28,7 @@ sysreqsdb = c(
   RcppMeCab = 'mecab',
   RGtk2 = 'gtk+',
   cairoDevice = 'cairo',
+  rgl = 'freetype',
   libstableR = 'gsl'
 )
 install_dep = function(pkg) {
