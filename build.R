@@ -117,7 +117,7 @@ build_one = function(pkg) {
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
   # autobrew fails, but this means we will rely on dynamic linking
   if (system2('autobrew', names(pkg)) == 0) {
-    xfun::Rcmd(c('INSTALL', paste0(pkg, '_*.tgz')))
+    xfun::Rcmd(c('INSTALL', sub('[.]tar[.]gz$', '.tgz', names(pkg))))
   } else if (xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
     failed <<- c(failed, pkg)
 }
