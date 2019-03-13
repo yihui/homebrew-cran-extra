@@ -32,10 +32,10 @@ rownames(available.packages(
 
 CRAN maintainers have provided binaries for most R packages (big thanks!), but a few have still been missing so far. This repository serves as a complement to the official CRAN respository, and provides a subset of the binary R packages that are unavailable on CRAN.
 
-To use this repository, you are expected to install the cask `r-app` from Homebrew (instead of the formula `brew install r`):
+To use this repository, you are expected to install the cask `r` from Homebrew (instead of the formula `brew install r`):
 
 ```sh
-brew cask install r-app
+brew cask install r
 ```
 
 The R installer you manually downloaded and installed from CRAN should also work, but it is not tested here.
