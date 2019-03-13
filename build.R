@@ -125,8 +125,10 @@ for (i in seq_along(pkgs)) build_one(pkgs[i])
 
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
 
-file.copy(list.files('.', '.+[.]tgz$'), dir, overwrite = TRUE)
-unlink(c('*.tar.gz', '*.tgz'))
+for (d in c('.', './binaries')) {
+  file.copy(list.files(d, '.+[.]tgz$', full.names = TRUE), dir, overwrite = TRUE)
+}
+unlink(c('*.tar.gz', '*.tgz', d), recursive = TRUE)
 unlink(c('PACKAGES*', 'index.md'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
