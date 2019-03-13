@@ -108,11 +108,6 @@ build_one = function(pkg) {
     if (xfun::loadable(p)) next
     install.packages(p, repos = c(getOption('repos'), 'https://macos.rbind.org'))
   }
-  # TODO: remove the hack after libstableR is updated on CRAN
-  # (https://github.com/swihart/libstableR/issues/1)
-  if (pkg == 'libstableR' && db['libstableR', 'Version'] <= package_version('1.0')) {
-    xfun::download_file('https://github.com/swihart/libstableR/archive/master.tar.gz', names(pkg))
-  }
   # autobrew assumes static linking, which may be difficult or impossible for
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
   # autobrew fails, but this means we will rely on dynamic linking
