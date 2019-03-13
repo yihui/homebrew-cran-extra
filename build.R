@@ -27,6 +27,7 @@ sysreqsdb = c(
   RQuantLib = 'quantlib',
   RcppMeCab = 'mecab',
   RGtk2 = 'gtk+',
+  Rmpi = 'open-mpi',
   cairoDevice = 'cairo',
   rgl = 'freetype',
   libstableR = 'gsl'
