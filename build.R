@@ -1,9 +1,6 @@
 options(repos = c(CRAN = 'https://cran.rstudio.com'))
 
-# install xfun at least 0.2
-if (tryCatch(packageVersion('xfun') <= '0.2', error = function(e) TRUE)) {
-  install.packages('xfun', repos = 'https://xran.yihui.name')
-}
+install.packages('xfun')
 
 db = available.packages(type = 'source')
 update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
