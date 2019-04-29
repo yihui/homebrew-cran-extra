@@ -7,7 +7,6 @@ update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
 
 ver = unlist(getRversion())[1:2]  # version x.y
 dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
-dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
@@ -66,6 +65,15 @@ writeLines(c(
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
 saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
+
+# when a new version of R appears, move the old binary packages to the new dir
+if (!dir.exists(dir)) xfun::in_dir(dirname(dir), {
+  if ((n <- length(vers <- list.files('.', '^\\d+[.]\\d+$'))) >= 1) {
+    unlink(vers[seq_len(n - 1)], recursive = TRUE)
+    file.rename(vers[n], ver)
+  }
+})
+dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
