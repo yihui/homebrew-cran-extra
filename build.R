@@ -139,7 +139,7 @@ if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse
 for (d in c('.', './binaries')) {
   file.copy(list.files(d, '.+[.]tgz$', full.names = TRUE), dir, overwrite = TRUE)
 }
-unlink(c('*.tar.gz', '*.tgz', d), recursive = TRUE)
+unlink(c('*.tar.gz', '*.tgz', '_AUTOBREW_BUILD', d), recursive = TRUE)
 unlink(c('PACKAGES*', 'index.md'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
