@@ -5,8 +5,8 @@ install.packages('xfun')
 db = available.packages(type = 'source')
 update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
 
-ver = unlist(getRversion())[1:2]  # version x.y
-dir = file.path('bin/macosx/el-capitan/contrib', paste(ver, collapse = '.'))
+ver = paste(unlist(getRversion())[1:2], collapse = '.')  # version x.y
+dir = file.path('bin/macosx/el-capitan/contrib', ver)
 
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
