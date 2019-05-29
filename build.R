@@ -12,7 +12,7 @@ dir = file.path('bin/macosx/el-capitan/contrib', ver)
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
 
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
-sysreqsdb = c(
+sysreqsdb = list(
   glpkAPI = 'glpk',
   Rglpk = 'glpk',
   rDEA = 'glpk',
@@ -30,7 +30,7 @@ sysreqsdb = c(
 )
 install_dep = function(pkg) {
   dep = sysreqsdb[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
-  dep = paste(na.omit(dep), collapse = ' ')
+  dep = paste(unlist(dep), collapse = ' ')
   if (dep != '') system(paste('brew install', dep))
 }
 
@@ -107,11 +107,11 @@ names(pkgs) = srcs
 failed = NULL
 # build binary packages
 build_one = function(pkg) {
-  # the brew formula gtk+ cannot be found without setting PKG_CONFIG_PATH
-  if ('gtk+' %in% sysreqsdb[pkg]) {
+  # the brew formula libffi is keg-only; needs to inform pkg-config
+  if ('gtk+' %in% sysreqsdb[[pkg]]) {
     env = Sys.getenv('PKG_CONFIG_PATH')
     on.exit(Sys.setenv(PKG_CONFIG_PATH = env), add = TRUE)
-    Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/gtk+/lib/pkgconfig")
+    Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/libffi/lib/pkgconfig")
   }
   # remove existing binary packages
   file.remove(list.files(dir, paste0('^', pkg, '_.+[.]tgz$'), full.names = TRUE))
