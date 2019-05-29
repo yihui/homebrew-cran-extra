@@ -111,7 +111,7 @@ build_one = function(pkg) {
   if ('gtk+' %in% sysreqsdb[pkg]) {
     env = Sys.getenv('PKG_CONFIG_PATH')
     on.exit(Sys.setenv(PKG_CONFIG_PATH = env), add = TRUE)
-    Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/libffi/lib/pkgconfig")
+    Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/gtk+/lib/pkgconfig")
   }
   # remove existing binary packages
   file.remove(list.files(dir, paste0('^', pkg, '_.+[.]tgz$'), full.names = TRUE))
