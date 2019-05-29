@@ -24,7 +24,7 @@ sysreqsdb = c(
   RcppMeCab = 'mecab',
   RGtk2 = c('gtk+', 'gobject-introspection'),
   Rmpi = 'open-mpi',
-  cairoDevice = 'cairo',
+  cairoDevice = c('gtk+', 'cairo'),
   rgl = 'freetype',
   libstableR = 'gsl'
 )
@@ -107,8 +107,8 @@ names(pkgs) = srcs
 failed = NULL
 # build binary packages
 build_one = function(pkg) {
-  # the brew formula libffi is keg-only; needs to inform pkg-config
-  if (pkg == 'RGtk2') {
+  # the brew formula gtk+ cannot be found without setting PKG_CONFIG_PATH
+  if ('gtk+' %in% sysreqsdb[pkg]) {
     env = Sys.getenv('PKG_CONFIG_PATH')
     on.exit(Sys.setenv(PKG_CONFIG_PATH = env), add = TRUE)
     Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/libffi/lib/pkgconfig")
