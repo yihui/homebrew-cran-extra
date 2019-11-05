@@ -45,6 +45,14 @@ if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
 # extra packages that must be built
 if (file.exists('extra')) pkgs = c(pkgs, readLines('extra'))
 
+# set an env var to decide which subset of pkgs to build, e.g., "0, 0.5", "0.1, 8.7"
+if (!is.na(i <- Sys.getenv('CRAN_BUILD_SUBSET', NA))) {
+  n = length(pkgs)
+  i = as.numeric(strsplit(i, ',\\s*')) * n
+  i = seq(max(1, floor(i[1])), min(n, ceiling(i[2])))
+  pkgs = pkgs[i]
+}
+
 # render the homepage index.html
 home = local({
   x = xfun::read_utf8('README.md')
