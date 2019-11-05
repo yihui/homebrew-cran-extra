@@ -14,6 +14,7 @@ before_install:
   - mkdir -p ~/.R
 
 install:
+  - brew update
   - brew cask install r gfortran xquartz
   - brew tap r-hub/cran
   - brew install autobrew
