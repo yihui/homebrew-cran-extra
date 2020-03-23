@@ -7,8 +7,8 @@ The repository https://macos.rbind.io ([Github repo](https://github.com/yihui/ho
 ```r
 # you may do this in your ~/.Rprofile so you don't have to do it every time
 options(repos = c(
-  CRAN = 'https://cran.rstudio.com',
-  CRANextra = 'https://macos.rbind.io'
+  CRANextra = 'https://macos.rbind.io',
+  CRAN = 'https://cran.rstudio.com'
 ))
 ```
 
