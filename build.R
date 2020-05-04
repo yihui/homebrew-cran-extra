@@ -6,7 +6,7 @@ db = available.packages(type = 'source')
 update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
 
 ver = paste(unlist(getRversion())[1:2], collapse = '.')  # version x.y
-dir = file.path('bin/macosx/el-capitan/contrib', ver)
+dir = file.path('bin/macosx/contrib', ver)
 
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
@@ -73,6 +73,12 @@ writeLines(c(
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
 saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
+
+# R 4.0 changed the package path (no longer use el-capitan in the path)
+if (dir.exists(d4 <- 'bin/macosx/el-capitan/contrib/4.0')) {
+  unlink(dir, recursive = TRUE)
+  file.rename(d4, dir)
+}
 
 # when a new version of R appears, move the old binary packages to the new dir
 if (!dir.exists(dir)) xfun::in_dir(dirname(dir), {
