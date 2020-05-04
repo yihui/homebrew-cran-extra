@@ -75,9 +75,9 @@ writeLines(c(
 saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 
 # R 4.0 changed the package path (no longer use el-capitan in the path)
-if (dir.exists(d4 <- 'bin/macosx/el-capitan/contrib/4.0')) {
+if (dir.exists(d4 <- 'bin/macosx/el-capitan/contrib')) {
   unlink(dir, recursive = TRUE)
-  file.rename(d4, dir)
+  file.rename(d4, dirname(dir))
 }
 
 # when a new version of R appears, move the old binary packages to the new dir
