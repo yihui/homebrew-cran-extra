@@ -146,7 +146,13 @@ build_one = function(pkg) {
   } else if (xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
     failed <<- c(failed, pkg)
 }
-for (i in seq_along(pkgs)) build_one(pkgs[i])
+t0 = Sys.time()
+for (i in seq_along(pkgs)) {
+  build_one(pkgs[i])
+  # give up the current job to avoid timeout on Travis this time; we can
+  # continue the rest next time
+  if (difftime(Sys.time(), t0, units = 'mins') > 40) break
+}
 
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
 
