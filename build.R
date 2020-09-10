@@ -60,7 +60,7 @@ home = local({
   xfun::write_utf8(x, 'index.Rmd')
   on.exit(file.remove(list.files('.', '^index[.][a-z]+$', ignore.case = TRUE)), add = TRUE)
   xfun::pkg_load2('knitr')
-  knitr::rocco('index.Rmd', encoding = 'UTF-8')
+  knitr::rocco('index.Rmd')
   xfun::read_utf8('index.html')
 })
 system('git checkout gh-pages')
