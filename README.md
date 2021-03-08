@@ -35,7 +35,7 @@ CRAN maintainers have provided binaries for most R packages (big thanks!), but a
 To use this repository, you are expected to install the cask `r` from Homebrew (instead of the formula `brew install r`):
 
 ```sh
-brew cask install r
+brew install --cask r
 ```
 
 The R installer you manually downloaded and installed from CRAN should also work, but it is not tested here.
@@ -50,7 +50,7 @@ The repository https://macos.rbind.io does not provide binary packages of these 
 
 1. Packages of which the system dependencies are not available in Homebrew (e.g., `rggobi`) or too difficult to install (e.g., `kmcudaR`).
 
-The repository is automatically updated daily from [Travis CI](https://travis-ci.com/yihui/homebrew-cran-extra), which means if a new version of a source R package appears on CRAN, its binary package should be available in this repository in less than 24 hours (if it satisfied the above conditions).
+The repository is automatically updated daily from [Github Action](https://github.com/yihui/homebrew-cran-extra/actions), which means if a new version of a source R package appears on CRAN, its binary package should be available in this repository in less than 24 hours (if it satisfies the above conditions).
 
 ## Instructions on system dependencies
 

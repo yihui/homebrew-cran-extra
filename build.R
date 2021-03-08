@@ -1,9 +1,7 @@
-options(repos = c(CRAN = 'https://cran.rstudio.com'))
-
 install.packages('xfun')
 
 db = available.packages(type = 'source')
-update.packages(.libPaths()[1], ask = FALSE, checkBuilt = TRUE)
+update.packages(checkBuilt = TRUE, ask = FALSE)
 
 ver = paste(unlist(getRversion())[1:2], collapse = '.')  # version x.y
 dir = file.path('bin/macosx/contrib', ver)
@@ -28,9 +26,36 @@ sysreqsdb = list(
   rgl = 'freetype',
   libstableR = 'gsl'
 )
+
+retry = function(expr, times = 3) {
+  for (i in seq_len(times)) {
+    if (!inherits(res <- try(expr, silent = TRUE), 'try-error')) return(res)
+    Sys.sleep(5)
+  }
+}
+
+# query Homebrew dependencies for an R package
+brew_dep = function(pkg) {
+  v = sysreqsdb[[pkg]]
+  if (inherits(v, 'AsIs')) return(v)
+  u = sprintf('https://sysreqs.r-hub.io/pkg/%s/osx-x86_64-clang', pkg)
+  x = retry(readLines(u, warn = FALSE))
+  x = gsub('^\\s*\\[|\\]\\s*$', '', x)
+  x = unlist(strsplit(gsub('"', '', x), ','))
+  x = setdiff(x, 'null')
+  if (length(x))
+    message('Package ', pkg, ' requires Homebrew packages: ', paste(x, collapse = ' '))
+  sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
+  x
+}
+brew_deps = function(pkgs) {
+  unlist(lapply(pkgs, brew_dep))
+}
+
 install_dep = function(pkg) {
-  dep = sysreqsdb[c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE))]
-  dep = paste(unlist(dep), collapse = ' ')
+  dep = brew_deps(c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE)))
+  if (length(dep) == 0) return()
+  dep = paste(dep, collapse = ' ')
   if (dep != '') system(paste('brew install', dep))
 }
 
@@ -72,7 +97,6 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
-saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 
 # R 4.0 changed the package path (no longer use el-capitan in the path)
 if (dir.exists(d4 <- 'bin/macosx/el-capitan/contrib')) {
@@ -149,9 +173,9 @@ build_one = function(pkg) {
 t0 = Sys.time()
 for (i in seq_along(pkgs)) {
   build_one(pkgs[i])
-  # give up the current job to avoid timeout on Travis this time; we can
+  # give up the current job to avoid timeout on Github Action this time; we can
   # continue the rest next time
-  if (difftime(Sys.time(), t0, units = 'mins') > 40) break
+  if (difftime(Sys.time(), t0, units = 'mins') > 300) break
 }
 
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
@@ -163,6 +187,7 @@ unlink(c('*.tar.gz', '*.tgz', '_AUTOBREW_BUILD', d), recursive = TRUE)
 unlink(c('PACKAGES*', 'index.md'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
+saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
 
 system2('ls', c('-lh', dir))
 system('du -sh .')

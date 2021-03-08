@@ -1,0 +1,53 @@
+on:
+  push:
+  schedule:
+    - cron: '0 6 * * * '
+
+name: build-extra
+
+jobs:
+  build-extra:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest, r: 'release'}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-tinytex@v1
+        env:
+          TINYTEX_INSTALLER: TinyTeX
+
+      - uses: r-lib/actions/setup-pandoc@v1
+
+      - name: Cache R packages
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ env.GITHUB_RUN_ID }}
+          restore-keys: ${{ runner.os }}-
+
+      - name: Build macOS binary packages
+        run: |
+          brew tap r-hub/cran
+          brew install autobrew
+          export PATH=/usr/local/opt/qt/bin:$PATH
+          mkdir -p ~/.R
+          Rscript build.R
+
+      - name: Push packages to Github
+        run: |
+          git add -A
+          git commit --amend -m"Publishing from the build $GITHUB_RUN_ID"
+          git push -fq origin gh-pages > /dev/null
+
