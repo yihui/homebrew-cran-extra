@@ -57,7 +57,7 @@ The repository is automatically updated daily from [Github Action](https://githu
 Some packages only require system dependencies at the build time, e.g., the R package **xml2** requires the brew package `libxml2` when building it from source, but `libxml2` is no longer needed once the binary package is built (after `install.packages('xml2')`, you can remove `libxml2`). However, some packages still need the system dependencies at the run time, such as **RGtk2** (you cannot `brew uninstall gtk+`). To install the system dependencies after installing a binary R package from `macos.rbind.io`, you may try:
 
 ```r
-devtools::install_github('yihui/xfun')
+install.packages('xfun')
 xfun:::install_brew_deps()
 ```
 
