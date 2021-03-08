@@ -156,7 +156,6 @@ build_one = function(pkg) {
   # skip if already built
   if (length(list.files('.', paste0('^', pkg, '_.+[.]tgz$')))) return()
   for (p in intersect(pkgs, deps <- xfun:::pkg_dep(pkg, db))) build_one(pkgs[pkgs == p])
-  message('Building ', pkg)
   install_dep(pkg)
   for (p in deps) {
     if (xfun::loadable(p)) next
@@ -172,6 +171,7 @@ build_one = function(pkg) {
 }
 t0 = Sys.time()
 for (i in seq_along(pkgs)) {
+  message('Building ', pkgs[i], ' (', i, '/', length(pkgs), ')')
   build_one(pkgs[i])
   # give up the current job to avoid timeout on Github Action this time; we can
   # continue the rest next time
