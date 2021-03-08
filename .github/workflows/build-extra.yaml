@@ -30,8 +30,6 @@ jobs:
         env:
           TINYTEX_INSTALLER: TinyTeX
 
-      - uses: r-lib/actions/setup-pandoc@v1
-
       - name: Cache R packages
         uses: actions/cache@v2
         with:
@@ -41,6 +39,7 @@ jobs:
 
       - name: Build macOS binary packages
         run: |
+          brew install pandoc
           brew tap r-hub/cran
           brew install autobrew
           export PATH=/usr/local/opt/qt/bin:$PATH
