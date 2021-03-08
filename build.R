@@ -1,4 +1,6 @@
-install.packages('xfun')
+# TODO: use CRAN version of xfun (>= 0.22)
+install.packages('remotes')
+remotes::install_github('yihui/xfun')
 
 db = available.packages(type = 'source')
 update.packages(checkBuilt = TRUE, ask = FALSE)
@@ -27,24 +29,11 @@ sysreqsdb = list(
   libstableR = 'gsl'
 )
 
-retry = function(expr, times = 3) {
-  for (i in seq_len(times)) {
-    if (!inherits(res <- try(expr, silent = TRUE), 'try-error')) return(res)
-    Sys.sleep(5)
-  }
-}
-
-# query Homebrew dependencies for an R package
+# query Homebrew dependencies for an R package and save them
 brew_dep = function(pkg) {
   v = sysreqsdb[[pkg]]
   if (inherits(v, 'AsIs')) return(v)
-  u = sprintf('https://sysreqs.r-hub.io/pkg/%s/osx-x86_64-clang', pkg)
-  x = retry(readLines(u, warn = FALSE))
-  x = gsub('^\\s*\\[|\\]\\s*$', '', x)
-  x = unlist(strsplit(gsub('"', '', x), ','))
-  x = setdiff(x, 'null')
-  if (length(x))
-    message('Package ', pkg, ' requires Homebrew packages: ', paste(x, collapse = ' '))
+  x = xfun:::brew_dep(pkg)
   sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
   x
 }
@@ -112,6 +101,8 @@ if (!dir.exists(dir)) xfun::in_dir(dirname(dir), {
   }
 })
 dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+
+xfun:::check_built(dir, dry_run = FALSE)
 
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
