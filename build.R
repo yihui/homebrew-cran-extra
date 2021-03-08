@@ -11,43 +11,6 @@ dir = file.path('bin/macosx/contrib', ver)
 # no openmp support
 cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', append = TRUE)
 
-# install brew dependencies that are not available in r-hub/sysreqsdb yet
-sysreqsdb = list(
-  glpkAPI = 'glpk',
-  Rglpk = 'glpk',
-  rDEA = 'glpk',
-  qtbase = 'qt',
-  Rhpc = 'open-mpi',
-  RDieHarder = 'dieharder',
-  Rgnuplot = 'gnuplot',
-  RQuantLib = 'quantlib',
-  RcppMeCab = 'mecab',
-  RGtk2 = c('gtk+', 'gobject-introspection'),
-  Rmpi = 'open-mpi',
-  cairoDevice = c('gtk+', 'cairo'),
-  rgl = 'freetype',
-  libstableR = 'gsl'
-)
-
-# query Homebrew dependencies for an R package and save them
-brew_dep = function(pkg) {
-  v = sysreqsdb[[pkg]]
-  if (inherits(v, 'AsIs')) return(v)
-  x = xfun:::brew_dep(pkg)
-  sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
-  x
-}
-brew_deps = function(pkgs) {
-  unlist(lapply(pkgs, brew_dep))
-}
-
-install_dep = function(pkg) {
-  dep = brew_deps(c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE)))
-  if (length(dep) == 0) return()
-  dep = paste(dep, collapse = ' ')
-  if (dep != '') system(paste('brew install', dep))
-}
-
 # only build packages that needs compilation and don't have binaries on CRAN
 db2 = available.packages(type = 'binary')
 pkgs = setdiff(rownames(db), rownames(db2))
@@ -76,6 +39,56 @@ writeLines(c(
   '/src/*  https://cran.rstudio.com/src/:splat',
   '/bin/windows/*  https://cran.rstudio.com/bin/windows/:splat'
 ), '_redirects')
+
+sysreqsdb = if (file.exists(sysdb <- 'bin/macosx/sysreqsdb.rds')) readRDS(sysdb) else list()
+
+# refresh the db 3 times every month
+if (format(Sys.Date(), '%d') %in% c('08', '18', '28')) {
+  for (i in .packages(TRUE)) {
+    sysreqsdb[[i]] = xfun:::brew_dep(i)
+  }
+}
+
+# install brew dependencies that are not available in r-hub/sysreqsdb yet
+sysreqsdb2 = list(
+  glpkAPI = 'glpk',
+  Rglpk = 'glpk',
+  rDEA = 'glpk',
+  qtbase = 'qt',
+  Rhpc = 'open-mpi',
+  RDieHarder = 'dieharder',
+  Rgnuplot = 'gnuplot',
+  RQuantLib = 'quantlib',
+  RcppMeCab = 'mecab',
+  RGtk2 = c('gtk+', 'gobject-introspection'),
+  Rmpi = 'open-mpi',
+  cairoDevice = c('gtk+', 'cairo'),
+  rgl = 'freetype',
+  libstableR = 'gsl'
+)
+
+for (i in intersect(names(sysreqsdb), names(sysreqsdb2))) {
+  sysreqsdb[[i]] = unique(c(sysreqsdb[[i]], sysreqsdb2[[i]]))
+}
+
+# query Homebrew dependencies for an R package and save them
+brew_dep = function(pkg) {
+  v = sysreqsdb[[pkg]]
+  if (inherits(v, 'AsIs')) return(v)
+  x = xfun:::brew_dep(pkg)
+  sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
+  x
+}
+brew_deps = function(pkgs) {
+  unlist(lapply(pkgs, brew_dep))
+}
+
+install_dep = function(pkg) {
+  dep = brew_deps(c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE)))
+  if (length(dep) == 0) return()
+  dep = paste(dep, collapse = ' ')
+  if (dep != '') system(paste('brew install', dep))
+}
 
 # R 4.0 changed the package path (no longer use el-capitan in the path)
 if (dir.exists(d4 <- 'bin/macosx/el-capitan/contrib')) {
@@ -184,7 +197,7 @@ local({
 unlink(c('PACKAGES*', 'index.md', 'index.Rmd'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
-saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
+saveRDS(sysreqsdb, sysdb)
 
 system2('ls', c('-lh', dir))
 system('du -sh .')
