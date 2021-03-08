@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ env.GITHUB_RUN_ID }}
+          key: ${{ runner.os }}-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-
 
       - name: Build macOS binary packages
