@@ -22,7 +22,7 @@ install.packages(c('cairoDevice', 'RGtk2'))
 
 To see which packages are available, use the function `available.packages()` in R:
 
-```{r}
+```r
 rownames(available.packages(
   repos = 'https://macos.rbind.io', type = 'binary'
 ))

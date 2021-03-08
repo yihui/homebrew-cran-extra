@@ -67,20 +67,10 @@ if (!is.na(i <- Sys.getenv('CRAN_BUILD_SUBSET', NA))) {
   pkgs = pkgs[i]
 }
 
-# render the homepage index.html
-home = local({
-  x = xfun::read_utf8('README.md')
-  x[1] = paste0(x[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
-  xfun::write_utf8(x, 'index.Rmd')
-  on.exit(file.remove(list.files('.', '^index[.][a-z]+$', ignore.case = TRUE)), add = TRUE)
-  xfun::pkg_load2('knitr')
-  knitr::rocco('index.Rmd')
-  xfun::read_utf8('index.html')
-})
+home = xfun::read_utf8('README.md')
 system('git checkout gh-pages')
 
 unlink(c('CNAME', 'src'), recursive = TRUE)
-xfun::write_utf8(home, 'index.html')
 writeLines(c(
   'https://macos.rbind.org/*  https://macos.rbind.io/:splat  301!',
   '/src/*  https://cran.rstudio.com/src/:splat',
@@ -175,7 +165,23 @@ for (d in c('.', './binaries')) {
   file.copy(list.files(d, '.+[.]tgz$', full.names = TRUE), dir, overwrite = TRUE)
 }
 unlink(c('*.tar.gz', '*.tgz', '_AUTOBREW_BUILD', d), recursive = TRUE)
-unlink(c('PACKAGES*', 'index.md'))
+
+# render the homepage index.html
+local({
+  x = home
+  x[1] = paste0(x[1], '\n\n### Yihui Xie\n\n### ', Sys.Date(), '\n')
+  # insert successfully built package names after a code block
+  p = list.files(dir, r <- '_[-0-9.]+[.]tgz$')
+  p = gsub(r, '', p)
+  i = grep('rownames\\(available.packages', x)[1]
+  x = append(x, c(
+    '\n```', capture.output(print(p)), '```\n'
+  ), which(x[i:length(x)] == '```')[1] + 1 + i)
+  xfun::write_utf8(x, 'index.Rmd')
+  xfun::pkg_load2('knitr')
+  knitr::rocco('index.Rmd')
+})
+unlink(c('PACKAGES*', 'index.md', 'index.Rmd'))
 
 tools::write_PACKAGES(dir, type = 'mac.binary')
 saveRDS(sysreqsdb, 'bin/macosx/sysreqsdb.rds')
