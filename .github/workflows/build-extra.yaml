@@ -37,6 +37,12 @@ jobs:
           key: ${{ runner.os }}-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-
 
+      - uses: fastai/workflows/ssh@master
+        with:
+          ssh_key: ${{ secrets.SSH_KEY }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v2
+
       - name: Build macOS binary packages
         run: |
           brew install pandoc
