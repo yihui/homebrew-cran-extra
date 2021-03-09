@@ -62,7 +62,7 @@ sysreqsdb2 = list(
   RGtk2 = c('gtk+', 'gobject-introspection'),
   Rmpi = 'open-mpi',
   cairoDevice = c('gtk+', 'cairo'),
-  rgl = 'freetype',
+  rgl = c('freetype', 'freeglut'),
   libstableR = 'gsl'
 )
 
