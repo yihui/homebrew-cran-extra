@@ -60,9 +60,11 @@ sysreqsdb2 = list(
   RQuantLib = 'quantlib',
   RcppMeCab = 'mecab',
   RGtk2 = c('gtk+', 'gobject-introspection'),
+  RSclient = 'openssl',
   Rmpi = 'open-mpi',
   cairoDevice = c('gtk+', 'cairo'),
   rgl = c('freetype', 'freeglut'),
+  rrd = 'rrdtool',
   libstableR = 'gsl'
 )
 
@@ -119,7 +121,7 @@ xfun:::check_built(dir, dry_run = FALSE)
 install_extra = function(p) {
   install.packages(p, repos = c(paste0('file://', getwd()), getOption('repos')), type = 'mac.binary')
 }
-for (i in xfun:::broken_packages(reinstall = FALSE)) {
+for (i in setdiff(xfun:::broken_packages(reinstall = FALSE), 'tcltk')) {
   remove.packages(i)
   install_extra(i)
 }
