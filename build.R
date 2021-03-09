@@ -3,7 +3,6 @@ install.packages('remotes')
 remotes::install_github('yihui/xfun')
 
 db = available.packages(type = 'source')
-update.packages(checkBuilt = TRUE, ask = FALSE)
 
 ver = paste(unlist(getRversion())[1:2], collapse = '.')  # version x.y
 dir = file.path('bin/macosx/contrib', ver)
@@ -105,14 +104,22 @@ if (!dir.exists(dir)) xfun::in_dir(dirname(dir), {
 })
 dir.create(dir, recursive = TRUE, showWarnings = FALSE)
 
-xfun:::check_built(dir, dry_run = FALSE)
-
 # delete binaries that have become available on CRAN, or of multiple versions of
 # the same package
 if (!file.exists('subset')) {
   tgz = list.files(dir, '.+_.+[.]tgz$', full.names = TRUE)
   tgz_name = gsub('_.*', '', basename(tgz))
   file.remove(tgz[!(tgz_name %in% pkgs) | duplicated(tgz_name, fromLast = TRUE)])
+}
+
+xfun:::check_built(dir, dry_run = FALSE)
+
+install_extra = function(p) {
+  install.packages(p, repos = c(paste0('file://', getwd()), getOption('repos')), type = 'mac.binary')
+}
+for (i in xfun:::broken_packages(reinstall = FALSE)) {
+  remove.packages(i)
+  install_extra(i)
 }
 
 # download source packages that have been updated on CRAN
@@ -152,8 +159,7 @@ build_one = function(pkg) {
   for (p in intersect(pkgs, deps <- xfun:::pkg_dep(pkg, db))) build_one(pkgs[pkgs == p])
   install_dep(pkg)
   for (p in deps) {
-    if (xfun::loadable(p)) next
-    install.packages(p, repos = c(getOption('repos'), 'https://macos.rbind.io'))
+    if (!xfun::loadable(p)) install_extra(p)
   }
   # autobrew assumes static linking, which may be difficult or impossible for
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
