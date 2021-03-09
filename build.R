@@ -79,14 +79,16 @@ brew_dep = function(pkg) {
   x
 }
 brew_deps = function(pkgs) {
-  unlist(lapply(pkgs, brew_dep))
+  unlist(lapply(unique(pkgs), brew_dep))
 }
 
-install_dep = function(pkg) {
-  dep = brew_deps(c(pkg, xfun:::pkg_dep(pkg, db, recursive = TRUE)))
+install_deps = function(pkgs) {
+  dep = brew_deps(c(pkgs, xfun:::pkg_dep(pkgs, db, recursive = TRUE), .packages(TRUE)))
   if (length(dep) == 0) return()
   dep = paste(dep, collapse = ' ')
-  if (dep != '') system(paste('brew install', dep))
+  if (dep == '') return()
+  message('Installing Homebrew dependencies: ', dep)
+  system(paste('brew install', dep))
 }
 
 # R 4.0 changed the package path (no longer use el-capitan in the path)
@@ -157,7 +159,6 @@ build_one = function(pkg) {
   # skip if already built
   if (length(list.files('.', paste0('^', pkg, '_.+[.]tgz$')))) return()
   for (p in intersect(pkgs, deps <- xfun:::pkg_dep(pkg, db))) build_one(pkgs[pkgs == p])
-  install_dep(pkg)
   for (p in deps) {
     if (!xfun::loadable(p)) install_extra(p)
   }
@@ -170,6 +171,7 @@ build_one = function(pkg) {
     failed <<- c(failed, pkg)
 }
 t0 = Sys.time()
+install_deps(pkgs)  # install all brew dependencies for R packages
 for (i in seq_along(pkgs)) {
   message('Building ', pkgs[i], ' (', i, '/', length(pkgs), ')')
   build_one(pkgs[i])
