@@ -78,7 +78,6 @@ brew_dep = function(pkg) {
   if (inherits(v, 'AsIs')) return(v)
   x = xfun:::brew_dep(pkg)
   sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
-  x
 }
 brew_deps = function(pkgs) {
   unlist(lapply(unique(pkgs), brew_dep))
