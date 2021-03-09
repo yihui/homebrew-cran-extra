@@ -168,7 +168,8 @@ build_one = function(pkg) {
   # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
   # autobrew fails, but this means we will rely on dynamic linking
   if (system2('autobrew', names(pkg)) == 0) {
-    xfun::Rcmd(c('INSTALL', file.path('binaries', sub('[.]tar[.]gz$', '.tgz', names(pkg)))))
+    xfun::Rcmd(c('INSTALL', pkg_file <- file.path('binaries', sub('[.]tar[.]gz$', '.tgz', names(pkg)))))
+    file.rename(pkg_file, basename(pkg_file))
   } else if (xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
     failed <<- c(failed, pkg)
 }
@@ -184,10 +185,8 @@ for (i in seq_along(pkgs)) {
 
 if (length(failed)) warning('Failed to build packages: ', paste(failed, collapse = ' '))
 
-for (d in c('.', './binaries')) {
-  file.copy(list.files(d, '.+[.]tgz$', full.names = TRUE), dir, overwrite = TRUE)
-}
-unlink(c('*.tar.gz', '*.tgz', '_AUTOBREW_BUILD', d), recursive = TRUE)
+file.copy(list.files('.', '.+[.]tgz$', full.names = TRUE), dir, overwrite = TRUE)
+unlink(c('*.tar.gz', '*.tgz', '_AUTOBREW_BUILD', 'binaries'), recursive = TRUE)
 
 # render the homepage index.html
 local({
