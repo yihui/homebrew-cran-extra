@@ -86,7 +86,7 @@ brew_deps = function(pkgs) {
 install_deps = function(pkgs) {
   dep = brew_deps(c(pkgs, xfun:::pkg_dep(pkgs, db, recursive = TRUE), .packages(TRUE)))
   if (length(dep) == 0) return()
-  dep = paste(dep, collapse = ' ')
+  dep = paste(unique(dep), collapse = ' ')
   if (dep == '') return()
   message('Installing Homebrew dependencies: ', dep)
   system(paste('brew install', dep))
