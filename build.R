@@ -3,6 +3,7 @@ install.packages('remotes')
 remotes::install_github('yihui/xfun')
 
 db = available.packages(type = 'source')
+all_pkgs = rownames(db)
 
 ver = paste(unlist(getRversion())[1:2], collapse = '.')  # version x.y
 dir = file.path('bin/macosx/contrib', ver)
@@ -12,7 +13,7 @@ cat('\nSHLIB_OPENMP_CFLAGS=\nSHLIB_OPENMP_CXXFLAGS=\n', file = '~/.R/Makevars', 
 
 # only build packages that needs compilation and don't have binaries on CRAN
 db2 = available.packages(type = 'binary')
-pkgs = setdiff(rownames(db), rownames(db2))
+pkgs = setdiff(all_pkgs, rownames(db2))
 pkgs = pkgs[db[pkgs, 'NeedsCompilation'] == 'yes']
 pkgs = setdiff(pkgs, readLines('ignore'))  # exclude pkgs that I'm unable to build
 
@@ -83,11 +84,11 @@ sample_max = function(x, n) {
   sample(x, min(n, length(x)))
 }
 # packages for which we haven't queried dependencies yet
-for (i in sample_max(setdiff(rownames(db), names(sysreqsdb)), 5000)) {
+for (i in sample_max(setdiff(all_pkgs, names(sysreqsdb)), 5000)) {
   sysreqsdb[[i]] = brew_dep(i)
 }
 # remove packages that are no longer on CRAN
-for (i in setdiff(names(sysreqsdb), rownames(db))) sysreqsdb[[i]] = NULL
+for (i in setdiff(names(sysreqsdb), all_pkgs)) sysreqsdb[[i]] = NULL
 
 brew_deps = function(pkgs) {
   unlist(lapply(unique(pkgs), brew_dep))
@@ -138,7 +139,7 @@ for (i in setdiff(xfun:::broken_packages(reinstall = FALSE), 'tcltk')) {
 # download source packages that have been updated on CRAN
 if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
   info = read.dcf(pkg_file, c('Package', 'Version'))
-  info = info[info[, 1] %in% rownames(db), , drop = FALSE]  # packages may be archived
+  info = info[info[, 1] %in% all_pkgs, , drop = FALSE]  # packages may be archived
   pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
 }
 
@@ -146,7 +147,7 @@ pkgs = intersect(pkgs, db[, 'Package'])
 
 if (length(pkgs) == 0) q('no')
 
-pkg_all = c(rownames(db), rownames(installed.packages()))
+pkg_all = c(all_pkgs, rownames(installed.packages()))
 for (pkg in pkgs) {
   # dependency not available on CRAN
   if (!all(xfun:::pkg_dep(pkg, db) %in% pkg_all)) next
