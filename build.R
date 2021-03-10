@@ -76,7 +76,7 @@ brew_dep = function(pkg) {
   sysreqsdb[[pkg]] <<- x
 }
 
-for (i in c(pkgs, .packages(TRUE))) sysreqsdb[[i]] = brew_dep(i)
+for (i in unique(c(pkgs, .packages(TRUE), names(sysreqsdb)))) sysreqsdb[[i]] = brew_dep(i)
 
 # refresh the db for a random subset of all CRAN packages (can't do all because
 # querying dependencies is time-consuming)
