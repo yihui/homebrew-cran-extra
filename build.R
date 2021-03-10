@@ -41,13 +41,6 @@ writeLines(c(
 
 sysreqsdb = if (file.exists(sysdb <- 'bin/macosx/sysreqsdb.rds')) readRDS(sysdb) else list()
 
-# refresh the db 3 times every month
-if (format(Sys.Date(), '%d') %in% c('08', '18', '28')) {
-  for (i in .packages(TRUE)) {
-    sysreqsdb[[i]] = xfun:::brew_dep(i)
-  }
-}
-
 # install brew dependencies that are not available in r-hub/sysreqsdb yet
 sysreqsdb2 = list(
   glpkAPI = 'glpk',
@@ -68,17 +61,34 @@ sysreqsdb2 = list(
   libstableR = 'gsl'
 )
 
-for (i in intersect(names(sysreqsdb), names(sysreqsdb2))) {
-  sysreqsdb[[i]] = unique(c(sysreqsdb[[i]], sysreqsdb2[[i]]))
-}
+base_pkgs = xfun:::base_pkgs()
 
 # query Homebrew dependencies for an R package and save them
 brew_dep = function(pkg) {
-  v = sysreqsdb[[pkg]]
-  if (inherits(v, 'AsIs')) return(v)
-  x = xfun:::brew_dep(pkg)
-  sysreqsdb[[pkg]] <<- I(unique(c(v, x)))
+  if (pkg %in% base_pkgs) return()
+  d = sysreqsdb[[pkg]]
+  v = xfun::attr(d, 'Version')
+  # return if dependency exists and package version hasn't changed
+  if (!is.null(d) && identical(v, db[pkg, 'Version'])) return(d)
+  x = unique(c(xfun:::brew_dep(pkg), sysreqsdb2[[pkg]]))
+  attr(x, 'Version') = db[pkg, 'Version']
+  sysreqsdb[[pkg]] <<- x
 }
+
+for (i in c(pkgs, .packages(TRUE))) sysreqsdb[[i]] = brew_dep(i)
+
+# refresh the db for a random subset of all CRAN packages (can't do all because
+# querying dependencies is time-consuming)
+sample_max = function(x, n) {
+  sample(x, min(n, length(x)))
+}
+# packages for which we haven't queried dependencies yet
+for (i in sample_max(setdiff(rownames(db), names(sysreqsdb)), 5000)) {
+  sysreqsdb[[i]] = brew_dep(i)
+}
+# remove packages that are no longer on CRAN
+for (i in setdiff(names(sysreqsdb), rownames(db))) sysreqsdb[[i]] = NULL
+
 brew_deps = function(pkgs) {
   unlist(lapply(unique(pkgs), brew_dep))
 }
