@@ -54,20 +54,16 @@ The repository is automatically updated daily from [Github Action](https://githu
 
 ## Instructions on system dependencies
 
-Some packages only require system dependencies at the build time, e.g., the R package **xml2** requires the brew package `libxml2` when building it from source, but `libxml2` is no longer needed once the binary package is built (after `install.packages('xml2')`, you can remove `libxml2`). However, some packages still need the system dependencies at the run time, such as **RGtk2** (you cannot `brew uninstall gtk+`). To install the system dependencies after installing a binary R package from `macos.rbind.io`, you may try:
+Some packages only require system dependencies at the build time, e.g., the R package **xml2** requires the brew package `libxml2` when building it from source, but `libxml2` is no longer needed once the binary package is built (after `install.packages('xml2')`, you can remove `libxml2`). However, some packages still need the system dependencies at the run time, such as **RGtk2** (you cannot `brew uninstall gtk+`). To install the system dependencies after installing a binary R package from `macos.rbind.io`, you may use `xfun:::brew_dep()` to query the dependencies and install them, e.g.,
 
 ```r
 install.packages('xfun')
-xfun:::install_brew_deps()
+system2('brew', c('install', xfun:::brew_dep('RGtk2')))
 ```
 
 ## Disclaimer
 
 My knowledge of building binary R packages is fairly limited, so please consider this repository as experimental before real experts join me. I'd welcome anyone to help with this project. In the same spirit of Homebrew, I really wish this will become a project maintained by the community instead of me alone.
-
-## Related work
-
-This repository is based on Jeroen Ooms's work <https://github.com/r-hub/homebrew-cran>. My major work was to create an actual CRAN-like repository to host the binary packages, and figure out the brew package dependencies for a few R packages that are not (yet) covered by the `r-hub/homebrew-cran` project. Please note that `r-hub/homebrew-cran` aims at _static linking_, so that you can get rid of the brew packages once the binary R packages are built, but some binary packages in this repo `macos.rbind.io` still require the brew packages to remain installed in your system (such as **RGtk2**, which requires `brew install gtk+`).
 
 ## License
 

@@ -41,8 +41,6 @@ jobs:
         run: |
           brew install pandoc
           brew install --cask xquartz
-          brew tap r-hub/cran
-          brew install autobrew
           export PATH=/usr/local/opt/qt/bin:$PATH
           mkdir -p ~/.R
           Rscript build.R

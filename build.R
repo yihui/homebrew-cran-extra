@@ -1,4 +1,4 @@
-# TODO: use CRAN version of xfun (>= 0.22)
+# TODO: use CRAN version of xfun (>= 0.26)
 install.packages('remotes')
 remotes::install_github('yihui/xfun')
 
@@ -174,13 +174,7 @@ build_one = function(pkg) {
   for (p in deps) {
     if (!xfun::loadable(p)) install_extra(p)
   }
-  # autobrew assumes static linking, which may be difficult or impossible for
-  # some packages (e.g., RGtk2), so we retry R CMD INSTALL --build instead if
-  # autobrew fails, but this means we will rely on dynamic linking
-  if (system2('autobrew', names(pkg)) == 0) {
-    xfun::Rcmd(c('INSTALL', pkg_file <- file.path('binaries', sub('[.]tar[.]gz$', '.tgz', names(pkg)))))
-    file.rename(pkg_file, basename(pkg_file))
-  } else if (xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
+  if (xfun::Rcmd(c('INSTALL', '--build', names(pkg))) != 0)
     failed <<- c(failed, pkg)
 }
 t0 = Sys.time()
