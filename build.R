@@ -20,7 +20,11 @@ pkgs = setdiff(pkgs, readLines('ignore'))  # exclude pkgs that I'm unable to bui
 # manually specify a subset of packages to be built
 if (file.exists('subset')) pkgs = intersect(pkgs, readLines('subset'))
 # extra packages that must be built
-if (file.exists('extra')) pkgs = c(pkgs, readLines('extra'))
+pkgs = c(if (file.exists('extra')) readLines('extra'), if (FALSE) pkgs)
+# NOTE: originally we tried to build all packages that don't have binaries on
+# CRAN, but this made the project burdensome to maintain; now we only build
+# these 'extra' packages. If any volunteer wants to pick up the original
+# project, please feel free to let me know and I can transfer it to you.
 
 # set an env var to decide which subset of pkgs to build, e.g., "0, 0.5", "0.1, 8.7"
 if (!is.na(i <- Sys.getenv('CRAN_BUILD_SUBSET', NA))) {
@@ -144,7 +148,7 @@ if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
   pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
 }
 
-pkgs = intersect(pkgs, db[, 'Package'])
+pkgs = intersect(pkgs, all_pkgs)
 
 if (length(pkgs) == 0) q('no')
 
