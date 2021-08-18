@@ -161,12 +161,6 @@ names(pkgs) = srcs
 failed = NULL
 # build binary packages
 build_one = function(pkg) {
-  # the brew formula libffi is keg-only; needs to inform pkg-config
-  if ('gtk+' %in% sysreqsdb[[pkg]]) {
-    env = Sys.getenv('PKG_CONFIG_PATH')
-    on.exit(Sys.setenv(PKG_CONFIG_PATH = env), add = TRUE)
-    Sys.setenv(PKG_CONFIG_PATH = "/usr/local/opt/libffi/lib/pkgconfig")
-  }
   # remove existing binary packages
   file.remove(list.files(dir, paste0('^', pkg, '_.+[.]tgz$'), full.names = TRUE))
   # skip if already built
