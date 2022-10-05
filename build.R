@@ -66,7 +66,7 @@ sysreqsdb2 = list(
   libstableR = 'gsl'
 )
 
-base_pkgs = xfun:::base_pkgs()
+base_pkgs = xfun::base_pkgs()
 
 # query Homebrew dependencies for an R package and save them
 brew_dep = function(pkg) {
@@ -92,7 +92,7 @@ for (i in sample_max(setdiff(all_pkgs, names(sysreqsdb)), 5000)) {
   sysreqsdb[[i]] = brew_dep(i)
 }
 # remove packages that are no longer on CRAN
-for (i in setdiff(names(sysreqsdb), all_pkgs)) sysreqsdb[[i]] = NULL
+# for (i in setdiff(names(sysreqsdb), all_pkgs)) sysreqsdb[[i]] = NULL
 
 brew_deps = function(pkgs) {
   unlist(lapply(unique(pkgs), brew_dep))
@@ -148,15 +148,21 @@ if (file.exists(pkg_file <- file.path(dir, 'PACKAGES'))) {
   pkgs = setdiff(pkgs, info[as.numeric_version(db[info[, 1], 'Version']) <= info[, 2], 1])
 }
 
-pkgs = intersect(pkgs, all_pkgs)
+# pkgs = intersect(pkgs, all_pkgs)
 
 if (length(pkgs) == 0) q('no')
 
 pkg_all = c(all_pkgs, rownames(installed.packages()))
 for (pkg in pkgs) {
-  # dependency not available on CRAN
-  if (!all(xfun:::pkg_dep(pkg, db) %in% pkg_all)) next
-  xfun:::download_tarball(pkg, db)
+  if (pkg %in% all_pkgs) {
+    # dependency not available on CRAN
+    if (!all(xfun:::pkg_dep(pkg, db) %in% pkg_all)) next
+    xfun:::download_tarball(pkg, db)
+  } else {
+    system2('git', c('clone', sprintf('https://github.com/cran/%s.git', pkg)))
+    xfun::Rcmd(c('build', pkg))
+    unlink(pkg, recursive = TRUE)
+  }
 }
 srcs = list.files('.', '.+[.]tar[.]gz$')
 pkgs = gsub('_.*$', '', srcs)
