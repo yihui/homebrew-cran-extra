@@ -2,6 +2,10 @@
 
 [![build-extra](https://github.com/yihui/homebrew-cran-extra/actions/workflows/build-extra.yaml/badge.svg)](https://github.com/yihui/homebrew-cran-extra/actions)
 
+**NOTE**: This project is no longer maintained. If anyone wants to resurrect it, please feel free to let me know.
+
+---
+
 The repository https://macos.rbind.io ([Github repo](https://github.com/yihui/homebrew-cran-extra)) provides some binary R packages for the Homebrew (cask) version of base R that are currently missing on CRAN, in a similar spirit as the "CRAN extras" repository for Windows: https://www.stats.ox.ac.uk/pub/RWin/. If you are using the Homebrew version of R on the latest version of macOS, you may set the `repos` option in R first:
 
 ```r
