@@ -70,13 +70,14 @@ base_pkgs = xfun::base_pkgs()
 
 # query Homebrew dependencies for an R package and save them
 brew_dep = function(pkg) {
-  if ((pkg %in% base_pkgs) || !(pkg %in% all_pkgs)) return()
+  if (pkg %in% base_pkgs) return()
   d = sysreqsdb[[pkg]]
   v = xfun::attr(d, 'Version')
+  v2 = if (pkg %in% all_pkgs) db[pkg, 'Version'] else NA
   # return if dependency exists and package version hasn't changed
-  if (!is.null(d) && identical(v, db[pkg, 'Version'])) return(d)
+  if (!is.null(d) && identical(v, v2)) return(d)
   x = unique(c(xfun:::brew_dep(pkg), sysreqsdb2[[pkg]]))
-  attr(x, 'Version') = db[pkg, 'Version']
+  attr(x, 'Version') = v2
   sysreqsdb[[pkg]] <<- x
 }
 
