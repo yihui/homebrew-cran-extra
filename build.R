@@ -169,6 +169,13 @@ srcs = list.files('.', '.+[.]tar[.]gz$')
 pkgs = gsub('_.*$', '', srcs)
 names(pkgs) = srcs
 
+# for building RGtk2/cairoDevice
+Sys.setenv(PKG_CONFIG_PATH = paste(
+  "/usr/local/lib/pkgconfig",
+  "/usr/local/lib/pkgconfig/gtk+-2.0.pc",
+  "/opt/X11/lib/pkgconfig", sep = ":"
+))
+
 failed = NULL
 # build binary packages
 build_one = function(pkg) {
