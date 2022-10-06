@@ -101,7 +101,7 @@ brew_deps = function(pkgs) {
 
 install_deps = function(pkgs) {
   dep = brew_deps(c(pkgs, xfun:::pkg_dep(pkgs, db, recursive = TRUE), .packages(TRUE)))
-  dep = setdiff(dep, 'TODO')  # not sure how it came in
+  dep = setdiff(dep, c('TODO', 'pandoc-citeproc'))  # not sure how `TODO` came in
   if (length(dep) == 0) return()
   dep = paste(unique(dep), collapse = ' ')
   if (dep == '') return()
